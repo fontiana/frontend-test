@@ -1,10 +1,18 @@
-# Tech interview
+# Process
+
+Fork the repository into your account. Once your code is ready open a pull-request on this repository and we will review it.
 
 # Introduction
 
-The aim of the test is to develop a mini-application for managing pricing.
+The aim of the test is to develop a mini-application for managing a Binance websocket pricing update.
 
-Criar uma aplicação React que realiza uma conexão via websocket da Binance, para exibição de atualização de valores: 1. A aplicação deve chamar o endpoint de listagem de symbols e listá-los em uma tabela. URL da API para listagem: (GET) https://data.binance.com/api/v3/exchangeInfo 2. O usuário deve poder criar uma lista de symbols e adicionar symbols nessa lista para acompanhar as atualizações de Last Price, Best bid price, Best ask price e Price change percent. Para isso, a conexão com o websocket deve ser estabelecida conforme os itens adicionados nesta lista, e a atualização dos valores deve ocorrer em tempo real na tabela. URL do Websocket para atualizações dos valores (onde symbol é o symbol retornado pelo API de listagem em Lowercase): wss://data-stream.binance.com/stream?streams=<symbol>/<symbol>/<symbol> Exemplo de conexão: wss://data-stream.binance.com/stream?streams=ethbtc/bnbbtc
+1. The appliction should consume this endpoint `GET` https://data.binance.com/api/v3/exchangeInfo and list it. 
+2. Users should be able create a list of symbols.
+3. Users should be able to add symbols to a list for watching the last price updates, best bid price, best ask price and price change percent.
+   1. For that, the application should connect to a websocket using the symbols previously selected by the user.
+   2. The update should occur in almost near real time.
+   3. Use the following url for connection to the websocket. wss://data-stream.binance.com/stream?streams={symbol}/{symbol}
+      1. Example: wss://data-stream.binance.com/stream?streams=ethbtc/bnbbtc
 
 Websocket sample response:
 ```
@@ -35,7 +43,17 @@ Websocket sample response:
 }
 ````
 
-# Utils
+# Technical Requirements
+
+- React 14+
+- Use context for data flow
+- Must be responsive
+
+# Bonus
+- unit-tests for the UI
+- integration-test (one (or more) just in order to show that you know what is it (: )
+
+# Docs
   
 Binance documentation:
 - https://binance-docs.github.io/apidocs/spot/en/#introduction
