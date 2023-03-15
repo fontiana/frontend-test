@@ -48,6 +48,8 @@ Websocket sample response:
 - React 14+
 - Use context for data flow
 - Must be responsive
+- Typescript
+- Usage of functional components
 
 # Bonus
 - unit-tests for the UI
