@@ -1,6 +1,5 @@
 import React from 'react';
 
-import axios from 'axios';
 import {
   AppBar,
   Box,
@@ -20,6 +19,9 @@ import {
   ThemeProvider,
   ButtonBase,
 } from '@mui/material';
+
+import {useNavigate } from 'react-router-dom';
+
 
 import MenuIcon from '@mui/icons-material/Menu';
 import DarkMode from '@mui/icons-material/DarkMode';
@@ -69,17 +71,30 @@ const DrawerLeft: React.FC<IDrawerLeft> = ({children, pageName}) => {
   const theme = useTheme();
   const [light, setLight] = React.useState(true);
   const [isDrawerOpen, setDrawerOpen] = React.useState(false);
+  const navigate = useNavigate()
   
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const drawerWidth = mobile && isDrawerOpen === false ? 0 : 240;
 
-    function toggleDrawerOpen() {
-      setDrawerOpen((prev) => !prev);
-    }
+  const toggleDrawerOpen = React.useCallback(() => {
+    setDrawerOpen((oldDrawerOpen) => !oldDrawerOpen);
+}, []);
     function closeDrawer() {
       setDrawerOpen((prev) => (prev ? !prev : prev));
     }
+
+    function handleNavigateHome(){
+      navigate('/home')
+    }
+    function handleNavigateFavorite(){
+      navigate('/favorites')
+    }
+    const toggleTheme = React.useCallback(() => {
+      setLight(light => !light)
+    },[])
+
+    
   return (
     <>
       <ThemeProvider theme={light ? themeLight : themeDark}>
@@ -126,7 +141,7 @@ const DrawerLeft: React.FC<IDrawerLeft> = ({children, pageName}) => {
             <Divider />
             <List>
               <ListItem disablePadding>
-                <ListItemButton>
+                <ListItemButton onClick={handleNavigateHome}>
                   <ListItemIcon>
                     <ListAltIcon color="primary"></ListAltIcon>
                   </ListItemIcon>
@@ -135,7 +150,7 @@ const DrawerLeft: React.FC<IDrawerLeft> = ({children, pageName}) => {
               </ListItem>
 
               <ListItem disablePadding>
-                <ListItemButton>
+                <ListItemButton onClick={handleNavigateFavorite}>
                   <ListItemIcon>
                     <CurrencyBitcoinIcon color="primary"></CurrencyBitcoinIcon>
                   </ListItemIcon>
@@ -149,7 +164,7 @@ const DrawerLeft: React.FC<IDrawerLeft> = ({children, pageName}) => {
                     <DarkMode color="primary"></DarkMode>
                   </ListItemIcon>
                   <Switch
-                    onChange={() => setLight((prev) => !prev)}
+                    onChange={toggleTheme}
                     checked={light === false}
                   />
                 </ListItemButton>

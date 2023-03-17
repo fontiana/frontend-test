@@ -1,100 +1,144 @@
 import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import {
-  AppBar,
-  Box,
-  CssBaseline,
-  Divider,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-  Typography,
-  Switch,
-  useTheme,
-  createTheme,
-  ThemeProvider,
-  ButtonBase,
-} from '@mui/material';
+
 import axios from 'axios';
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, calories, fat, carbs, protein };
+import { FavContext, IFavContextGlobal } from '../../context/FavContext';
+
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import TableBody from '@mui/material/TableBody';
+import TableHead from '@mui/material/TableHead';
+import { Box, IconButton, Typography } from '@mui/material';
+import TableContainer from '@mui/material/TableContainer';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
+
+
+interface ISymbol {
+  data: {
+    symbols: {
+      symbol: string;
+      status: string;
+    }[];
+  };
+}
+interface ISymbolName {
+  symbol: string;
+  statusSymbol: string;
 }
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
 
 const TableCoins = () => {
+  const [symbols, setSymbols] = React.useState<ISymbolName[] | undefined>();
+  const fav = React.useContext(FavContext)
+  let arraysSymbolsFav: string[] = [];
 
-  const [isDrawerOpen, setDrawerOpen] = React.useState(false);
-  // const drawerWidth = isDrawerOpen === false ? 0 : 240;
 
+  function isSymbol(obj: unknown): obj is ISymbol {
+    if (obj && typeof obj === 'object' && 'data' in obj) {
+      console.log('true');
+      return true;
+    } else {
+      console.log('false');
+      return false;
+    }
+  }
+
+  function handleAddFavCoin(symbol: string) {
+    if(fav.favCoins.includes(symbol)){
+    fav.setFavCoins(current => [...current.filter(oldFav => oldFav !== symbol)])
+    }
+     else{
+      fav.setFavCoins([...fav.favCoins, symbol])
+    }
+    setTimeout(() =>{
+      console.log(fav.favCoins)
+    }, 1000)
+  }
 
   React.useEffect(() => {
-    axios.get('https://data.binance.com/api/v3/exchangeInfo').then((data) => {
-      console.log(data);
-    });
+    axios
+      .get('https://data.binance.com/api/v3/exchangeInfo')
+      .then((dataSymbols) => {
+        const symbolsReponse: ISymbol = dataSymbols;
+
+        if (isSymbol(symbolsReponse)) {
+          setSymbols(
+            symbolsReponse.data.symbols.map((symbolItem) => {
+              return {
+                symbol: symbolItem.symbol,
+                statusSymbol: symbolItem.status,
+              };
+            }),
+          );
+        }
+        console.log('oi');
+      });
   }, []);
-  return (
-    <Box display={'flex'} justifyContent={'start'}>
-      <TableContainer
-        component={Paper}
-        sx={{
-          overflowX: 'auto',
-          // marginRight: 'auto',
-          // marginLeft: 'auto',
-          width: {
-            xs: '80vw',
-            sm: '50vw',
-            md: 'calc(100% - 240px)',
-            lg: '100%',
-            xl: '100%',
-          },
-        }}
-      >
-        <Table sx={{}} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Symbol</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-              <TableRow
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
+
+  if (symbols)
+    return (
+      <Box display={'flex'} justifyContent={'start'}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            overflowX: 'auto',
+            overflowY: 'auto',
+            height: {
+              xs: '50vh',
+              sm: '50vh',
+              md: 'calc(100% - 240px)',
+              lg: '100%',
+              xl: '100%',
+            },
+            width: {
+              xs: '80vw',
+              sm: '50vw',
+              md: 'calc(100% - 240px)',
+              lg: '100%',
+              xl: '100%',
+            },
+          }}
+        >
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  <Typography fontWeight={'800'}>Symbol</Typography>
                 </TableCell>
-                <TableCell align="right"></TableCell>
-                <TableCell align="right"></TableCell>
-                <TableCell align="right"></TableCell>
-                <TableCell align="right"></TableCell>
+                <TableCell align="center">
+                  <Typography fontWeight={'800'}>Favorite</Typography>
+                </TableCell>
               </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
-  );
+            </TableHead>
+            <TableBody>
+              {symbols.map((item) => {
+                return (
+                  <TableRow
+                    key={item.symbol}
+                    sx={{
+                      '&:last-child td, &:last-child th': { border: 0 },
+                    }}
+                  >
+                    <TableCell>{item.symbol}</TableCell>
+                    <TableCell align="center">
+                      <IconButton onClick={() => handleAddFavCoin(item.symbol)}>
+                        { fav.favCoins.includes(item.symbol) ?  <FavoriteIcon></FavoriteIcon>:<FavoriteBorderIcon></FavoriteBorderIcon>}
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    );
+  else {
+    return <p>Loading</p>;
+  }
 };
 
 export default TableCoins;
