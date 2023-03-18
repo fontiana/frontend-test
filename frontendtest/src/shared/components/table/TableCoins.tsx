@@ -33,7 +33,6 @@ interface ISymbolName {
 const TableCoins = () => {
   const [symbols, setSymbols] = React.useState<ISymbolName[] | undefined>();
   const fav = React.useContext(FavContext)
-  let arraysSymbolsFav: string[] = [];
 
 
   function isSymbol(obj: unknown): obj is ISymbol {
@@ -53,9 +52,6 @@ const TableCoins = () => {
      else{
       fav.setFavCoins([...fav.favCoins, symbol])
     }
-    setTimeout(() =>{
-      console.log(fav.favCoins)
-    }, 1000)
   }
 
   React.useEffect(() => {
