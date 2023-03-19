@@ -45,12 +45,15 @@ const TableCoins = () => {
     }
   }
 
-  function handleAddFavCoin(symbol: string) {
-    if(fav.favCoins.includes(symbol)){
-    fav.setFavCoins(current => [...current.filter(oldFav => oldFav !== symbol)])
+  function handleAddFavCoin(symbolParameter: string) {
+    console.log('symbolParameter',symbolParameter)
+    const symbolIndex =  fav.favCoins.findIndex(symbolItem => symbolItem.symbol === symbolParameter)
+    console.log(symbolIndex, 'symbolIndex')
+    if(symbolIndex >= 0){
+    fav.setFavCoins(current => [...current.filter(oldFav => oldFav.symbol !== symbolParameter)])
     }
      else{
-      fav.setFavCoins([...fav.favCoins, symbol])
+      fav.setFavCoins(fav.favCoins.concat({symbol:symbolParameter}))
     }
   }
 
@@ -85,16 +88,16 @@ const TableCoins = () => {
             height: {
               xs: '50vh',
               sm: '50vh',
-              md: 'calc(100% - 240px)',
+              md: '50vh',
               lg: '100%',
               xl: '100%',
             },
             width: {
               xs: '80vw',
               sm: '50vw',
-              md: 'calc(100% - 240px)',
-              lg: '100%',
-              xl: '100%',
+              md: '50vw',
+              lg: '50vw',
+              xl: '50vw',
             },
           }}
         >
@@ -121,7 +124,7 @@ const TableCoins = () => {
                     <TableCell>{item.symbol}</TableCell>
                     <TableCell align="center">
                       <IconButton onClick={() => handleAddFavCoin(item.symbol)}>
-                        { fav.favCoins.includes(item.symbol) ?  <FavoriteIcon></FavoriteIcon>:<FavoriteBorderIcon></FavoriteBorderIcon>}
+                        { fav.favCoins.findIndex(symbolItemIndex => symbolItemIndex.symbol === item.symbol ) >= 0 ?  <FavoriteIcon></FavoriteIcon>:<FavoriteBorderIcon></FavoriteBorderIcon>}
                       </IconButton>
                     </TableCell>
                   </TableRow>

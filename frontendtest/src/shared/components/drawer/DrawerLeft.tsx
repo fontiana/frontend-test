@@ -69,7 +69,7 @@ interface IDrawerLeft {
 const DrawerLeft: React.FC<IDrawerLeft> = ({children, pageName}) => {
   
   const theme = useTheme();
-  const [light, setLight] = React.useState(true);
+  const [light, setLight] = React.useState(false);
   const [isDrawerOpen, setDrawerOpen] = React.useState(false);
   const navigate = useNavigate()
   
