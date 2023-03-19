@@ -34,8 +34,6 @@ const Favorites = () => {
 
   let symbolStringMethod = fav.favCoins.map(symbolItem => symbolItem.symbol).join("@ticker/").toLowerCase() + "@ticker";
 
-  let arrayFormated = fav.favCoins.join("@ticker/").toLowerCase() + "@ticker";
-  console.log(arrayFormated);
 
   //   let ws = new WebSocket(
   //   'wss://data-stream.binance.com/stream?streams=ethbusd@kline_1m',
@@ -57,10 +55,12 @@ const Favorites = () => {
     if(verifySymbolIndex >= 0){
       const precoAtualizado = [...fav.favCoins]
       precoAtualizado[verifySymbolIndex].price = parseData.data.c
+
+      fav.setFavCoins(precoAtualizado)
       console.log('if fav.favCoins',fav.favCoins)
     } else {
       console.log('else fav.favCoins',fav.favCoins)
-      
+
       fav.setFavCoins(fav.favCoins.concat({symbol: parseData.data.s, price: parseData.data.c}))
     }
 
