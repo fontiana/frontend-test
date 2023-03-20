@@ -6,7 +6,7 @@ Fork the repository into your account. Once your code is ready open a pull-reque
 
 The aim of the test is to develop a mini-application for managing a Binance websocket pricing update.
 
-1. The appliction should consume this endpoint `GET` https://data.binance.com/api/v3/exchangeInfo and list it. 
+1. The appliction should consume this endpoint `GET` https://data.binance.com/api/v3/exchangeInfo and list it.
 2. Users should be able create a list of symbols.
 3. Users should be able to add symbols to a list for watching the last price updates, best bid price, best ask price and price change percent.
    1. For that, the application should connect to a websocket using the symbols previously selected by the user.
@@ -14,7 +14,23 @@ The aim of the test is to develop a mini-application for managing a Binance webs
    3. Use the following url for connection to the websocket. wss://data-stream.binance.com/stream?streams={symbol}/{symbol}
       1. Example: wss://data-stream.binance.com/stream?streams=ethbtc/bnbbtc
 
+To use the websocket the Symbol has to have some method after the Symbol name (e.g, @trade, @miniTicker, @tickerm, and so on)
+Examples: wss://data-stream.binance.com/stream?streams=ethbtc@ticker/bnbbtc@trade
+
+wss documentation: https://github.com/binance/binance-spot-api-docs/blob/master/web-socket-streams.md
+
+The payload bellow comes from the method @ticker:
+
+24hr rolling window ticker statistics for a single symbol. These are NOT the statistics of the UTC day, but a 24hr rolling window for the previous 24hrs.
+
+Stream Name: <symbol>@ticker
+
+Update Speed: 1000ms
+
+Payload:
+
 Websocket sample response:
+
 ```
 {
   "e": "24hrTicker",  // Event type
@@ -41,7 +57,7 @@ Websocket sample response:
   "L": 18150,         // Last trade Id
   "n": 18151          // Total number of trades
 }
-````
+```
 
 # Technical Requirements
 
@@ -52,12 +68,14 @@ Websocket sample response:
 - Usage of functional components
 
 # Bonus
+
 - unit-tests for the UI
 - integration-test (one (or more) just in order to show that you know what is it (: )
 
 # Docs
-  
+
 Binance documentation:
+
 - https://binance-docs.github.io/apidocs/spot/en/#introduction
 
 UI Sample to use as a guide:
