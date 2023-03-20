@@ -1,6 +1,6 @@
 import React from "react";
-import DrawerLeft from "../../shared/components/drawer/DrawerLeft";
 import { FavContext } from "../../shared/context/FavContext";
+import DrawerLeft from "../../shared/components/drawer/DrawerLeft";
 
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -8,11 +8,8 @@ import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import { Box, Typography } from "@mui/material";
 import TableContainer from "@mui/material/TableContainer";
-import { Box, IconButton, Typography } from "@mui/material";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { io } from "socket.io-client";
 
 interface ITicker {
   stream: string;
@@ -27,13 +24,9 @@ interface ITicker {
 
 const Favorites = () => {
   const fav = React.useContext(FavContext);
-  const padrao = /^.*?(?=@)/;
-  console.log(fav);
 
-  const [favTick, setFavTick] = React.useState<ITicker>();
 
   let symbolStringMethod = fav.favCoins.map(symbolItem => symbolItem.symbol).join("@ticker/").toLowerCase() + "@ticker";
-
 
   //   let ws = new WebSocket(
   //   'wss://data-stream.binance.com/stream?streams=ethbusd@kline_1m',
@@ -43,33 +36,30 @@ const Favorites = () => {
   // );
   // let ws = new WebSocket('wss://data-stream.binance.com:9443/ws/etheur@trade')
 
-  let ws = new WebSocket(
-    `wss://data-stream.binance.com/stream?streams=${symbolStringMethod}`
-  );
-  ws.onmessage = (event) => {
-    let parseData: ITicker = JSON.parse(event.data);
-    console.log(parseData);
 
-    const verifySymbolIndex = fav.favCoins.findIndex(symbolItem => symbolItem.symbol === parseData.data.s)
-
-    if(verifySymbolIndex >= 0){
-      const precoAtualizado = [...fav.favCoins]
-      precoAtualizado[verifySymbolIndex].price = parseData.data.c
-
-      fav.setFavCoins(precoAtualizado)
-      console.log('if fav.favCoins',fav.favCoins)
-    } else {
-      console.log('else fav.favCoins',fav.favCoins)
-
-      fav.setFavCoins(fav.favCoins.concat({symbol: parseData.data.s, price: parseData.data.c}))
-    }
-
-    // setFavTick(oldValues => [...oldValues, {stream: parseData.stream, data: parseData.data}])
-
-  };
 
   React.useEffect(() => {
-    console.log("fav.favCoins", fav.favCoins);
+    let ws = new WebSocket(
+      `wss://data-stream.binance.com/stream?streams=${symbolStringMethod}`
+    );
+    ws.onmessage = (event) => {
+      let parseData: ITicker = JSON.parse(event.data);
+  
+      const verifySymbolIndex = fav.favCoins.findIndex(symbolItem => symbolItem.symbol === parseData.data.s)
+  
+      if(verifySymbolIndex >= 0){
+        const precoAtualizado = [...fav.favCoins]
+        precoAtualizado[verifySymbolIndex].price = parseData.data.c
+  
+        fav.setFavCoins(precoAtualizado)
+      } else {
+  
+        fav.setFavCoins(fav.favCoins.concat({symbol: parseData.data.s, price: parseData.data.c}))
+      }
+  
+  
+    };
+    
     return () => {
       ws.close();
     };

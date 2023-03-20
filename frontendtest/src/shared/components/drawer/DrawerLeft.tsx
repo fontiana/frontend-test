@@ -26,11 +26,9 @@ import {useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import DarkMode from '@mui/icons-material/DarkMode';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
 
 import useMediaQuery from '@mui/material/useMediaQuery';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
 const themeLight = createTheme({
   palette: {
     mode: 'light',
@@ -117,7 +115,6 @@ const DrawerLeft: React.FC<IDrawerLeft> = ({children, pageName}) => {
                 variant="h6"
                 color={'secondary'}
                 noWrap
-                // component="div"
               >
                 {pageName}
               </Typography>

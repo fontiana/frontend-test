@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import { FavContext, IFavContextGlobal } from '../../context/FavContext';
+import { FavContext } from '../../context/FavContext';
 
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -9,10 +9,12 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import TableHead from '@mui/material/TableHead';
-import { Box, IconButton, Typography } from '@mui/material';
-import TableContainer from '@mui/material/TableContainer';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+
+
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import TableContainer from '@mui/material/TableContainer';
+import { Box, IconButton, Typography } from '@mui/material';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 
 
@@ -37,18 +39,14 @@ const TableCoins = () => {
 
   function isSymbol(obj: unknown): obj is ISymbol {
     if (obj && typeof obj === 'object' && 'data' in obj) {
-      console.log('true');
       return true;
     } else {
-      console.log('false');
       return false;
     }
   }
 
   function handleAddFavCoin(symbolParameter: string) {
-    console.log('symbolParameter',symbolParameter)
     const symbolIndex =  fav.favCoins.findIndex(symbolItem => symbolItem.symbol === symbolParameter)
-    console.log(symbolIndex, 'symbolIndex')
     if(symbolIndex >= 0){
     fav.setFavCoins(current => [...current.filter(oldFav => oldFav.symbol !== symbolParameter)])
     }
@@ -73,7 +71,6 @@ const TableCoins = () => {
             }),
           );
         }
-        console.log('oi');
       });
   }, []);
 
