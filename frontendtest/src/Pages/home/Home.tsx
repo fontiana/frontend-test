@@ -1,34 +1,4 @@
 import React from 'react';
-
-import axios from 'axios';
-import {
-  AppBar,
-  Box,
-  CssBaseline,
-  Divider,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-  Typography,
-  Switch,
-  useTheme,
-  createTheme,
-  ThemeProvider,
-  ButtonBase,
-} from '@mui/material';
-
-import MenuIcon from '@mui/icons-material/Menu';
-import DarkMode from '@mui/icons-material/DarkMode';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
-
-import useMediaQuery from '@mui/material/useMediaQuery';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
 import TableCoins from '../../shared/components/table/TableCoins';
 import DrawerLeft from '../../shared/components/drawer/DrawerLeft';
 
