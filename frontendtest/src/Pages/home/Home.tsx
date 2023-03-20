@@ -50,7 +50,7 @@ const Home = () => {
 
 
   return (
-    <DrawerLeft pageName='Tabela'>
+    <DrawerLeft pageName='Table'>
           <TableCoins />
     </DrawerLeft>
   );

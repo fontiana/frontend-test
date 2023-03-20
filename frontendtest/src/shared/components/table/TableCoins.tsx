@@ -110,7 +110,8 @@ const TableCoins = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {symbols.map((item) => {
+              {symbols.map((item, index) => {
+                if(index < 100)
                 return (
                   <TableRow
                     key={item.symbol}
