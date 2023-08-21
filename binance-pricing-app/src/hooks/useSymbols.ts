@@ -13,7 +13,10 @@ const useSymbols = (): UseSymbolsProps => {
   useEffect(() => {
     axios.get('https://data.binance.com/api/v3/exchangeInfo')
       .then(response => {
-        setSymbols(response.data.symbols);
+
+        const symbols = response.data.symbols.map((s: any) => s.symbol);
+        setSymbols(symbols);
+        console.log('symbols', symbols);
         setLoading(false);
       })
       .catch(error => {
