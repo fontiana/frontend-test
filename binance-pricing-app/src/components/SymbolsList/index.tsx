@@ -1,9 +1,11 @@
+import React, { useState } from 'react';
 import {
   SymbolsListContainer,
   SymbolsListTitle,
   SymbolsListContent,
   SymbolItem,
-  SymbolItemText
+  SymbolItemText,
+  SymbolInput,
 } from './style.ts';
 
 interface SymbolsListProps {
@@ -11,12 +13,22 @@ interface SymbolsListProps {
 }
 
 export const SymbolsList: React.FC<SymbolsListProps> = ({ symbols }) => {
-  console.log('SymbolsData', symbols);
+  const [searchTerm, setSearchTerm] = useState('');
+  const displayedSymbols = symbols.filter(symbol =>
+    symbol.toLowerCase().includes(searchTerm.toLowerCase())
+  ).slice(0, 5);
+
   return (
     <SymbolsListContainer>
+      <SymbolInput
+        type="text"
+        placeholder="Search symbols"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
       <SymbolsListTitle>Symbols</SymbolsListTitle>
       <SymbolsListContent>
-        { symbols.map((symbol, index) => (
+        { displayedSymbols.map((symbol, index) => (
           <SymbolItem key={ index }>
             <SymbolItemText>{ symbol }</SymbolItemText>
           </SymbolItem>

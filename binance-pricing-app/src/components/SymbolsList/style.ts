@@ -47,3 +47,19 @@ export const SymbolItemText = styled.p`
   font-weight: bold;
   color: #333;
 `;
+
+export const SymbolInput = styled.input`
+  width: 100%;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  color: #333;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+
+  &:focus {
+    border-color: #333;
+  }
+`;
