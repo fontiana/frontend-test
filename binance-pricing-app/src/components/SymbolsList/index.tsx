@@ -10,9 +10,10 @@ import {
 
 interface SymbolsListProps {
   symbols: string[];
+  onSymbolSelect: (symbol: string) => void;
 }
 
-export const SymbolsList: React.FC<SymbolsListProps> = ({ symbols }) => {
+export const SymbolsList: React.FC<SymbolsListProps> = ({ symbols, onSymbolSelect }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const displayedSymbols = symbols.filter(symbol =>
     symbol.toLowerCase().includes(searchTerm.toLowerCase())
@@ -30,7 +31,7 @@ export const SymbolsList: React.FC<SymbolsListProps> = ({ symbols }) => {
       <SymbolsListContent>
         { displayedSymbols.map((symbol, index) => (
           <SymbolItem key={ index }>
-            <SymbolItemText>{ symbol }</SymbolItemText>
+            <SymbolItemText onClick={() => onSymbolSelect(symbol)}>{ symbol }</SymbolItemText>
           </SymbolItem>
         )) }
       </SymbolsListContent>
