@@ -9,7 +9,7 @@ export const SymbolsDetailsContainer = styled.div`
 
 export const SymbolsDetailsTitle = styled.h3`
   font-size: 24px;
-  color: #30B482;
+  color: #fff;
   margin-bottom: 20px;
 `;
 

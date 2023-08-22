@@ -37,10 +37,10 @@ const SymbolDetails: React.FC<SymbolDetailsProps> = ({ symbol }) => {
         const tradeData = data.data;
 
         // setSymb(symbol);
-        setLastPrice(parseFloat(tradeData.p));
+        setLastPrice(parseFloat(tradeData.c));
         setBidPrice(parseFloat(tradeData.b));
         setAskPrice(parseFloat(tradeData.a));
-        setPriceChange(tradeData.P);
+        setPriceChange(tradeData.P.toString());
       }
     };
 

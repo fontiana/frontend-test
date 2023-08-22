@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
 
 import { SymbolsList } from "../SymbolsList";
-import { MainContainer } from './style.ts';
+import { MainContainer, MainContent, SymbolsContainer } from './style.ts';
 import useSymbols from "../../hooks/useSymbols.ts";
 import { setSymbols } from '../../redux/symbolsSlice.ts';
 import SymbolsTable from "../SymbolsTable/index.tsx";
@@ -22,14 +22,16 @@ export const Main: React.FC = () => {
 
   return (
     <MainContainer>
-      {loading ? (
-        <p>Carregando...</p>
-      ) : (
-        <>
-          <SymbolsList symbols={symbols} onSymbolSelect={handleSymbolSelection} />
-          <SymbolsTable selectedSymbol={selectedSymbol} />
-        </>
-      )}
+      <MainContent>
+        {loading ? (
+          <p>Carregando...</p>
+        ) : (
+          <>
+            <SymbolsList symbols={symbols} onSymbolSelect={handleSymbolSelection} />
+          </>
+        )}
+        <SymbolsTable selectedSymbol={selectedSymbol} />
+      </MainContent>
     </MainContainer>
   );
 };

@@ -3,10 +3,11 @@ import styled from 'styled-components';
 export const SymbolsListContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 50%;
   height: 100%;
   padding: 20px;
-  background-color: #fff;
+  margin: 20px;
+  background-color: #30B482;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 `;
@@ -14,25 +15,23 @@ export const SymbolsListContainer = styled.div`
 export const SymbolsListTitle = styled.h2`
   font-size: 1.5rem;
   font-weight: bold;
-  color: #333;
+  color: #fff;
 `;
 
 export const SymbolsListContent = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: auto;
   height: 100%;
   margin-top: 20px;
-  overflow-y: auto;
 `;
 
 export const SymbolItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 10px 20px;
-  border-radius: 5px;
+  width: auto;
+  padding: 10px;
   background-color: #eee;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -49,7 +48,7 @@ export const SymbolItemText = styled.p`
 `;
 
 export const SymbolInput = styled.input`
-  width: 100%;
+  width: auto;
   height: 40px;
   padding: 0 10px;
   border: 1px solid #ddd;

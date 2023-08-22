@@ -23,7 +23,7 @@ export const SymbolsList: React.FC<SymbolsListProps> = ({ symbols, onSymbolSelec
     <SymbolsListContainer>
       <SymbolInput
         type="text"
-        placeholder="Search symbols"
+        placeholder="Search"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
