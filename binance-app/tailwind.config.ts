@@ -18,7 +18,7 @@ const config: Config = {
       },
       green: {
         100: '#e6f9ee',
-        200: '#d6f5e3',
+        200: '#c4f3d7',
         600: '#6bb68d',
       },
       white: '#fff',
