@@ -15,7 +15,7 @@ export function SymbolCollection({ symbols }: SymbolCollectionProps) {
       <SymbolCard type="header" />
 
       {isLoading
-        ? [...Array(10)].map(() => <SymbolCard type="skeleton" />)
+        ? [...Array(10)].map((_, index) => <SymbolCard key={index} type="skeleton" />)
         : symbols.map(({ symbol }) => (
             <SymbolCard key={symbol} symbol={symbol} />
           ))}
