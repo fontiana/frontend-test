@@ -1,29 +1,22 @@
 import { SymbolContext } from '@/contexts/SymbolContext';
 import { MagnifyingGlass } from '@phosphor-icons/react';
 import classNames from 'classnames';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { SymbolCollection } from '../SymbolCollection';
 
 export function SymbolList() {
   const [search, setSearch] = useState('');
-  const [filteredSymbols, setFilteredSymbols] = useState<{ symbol: string }[]>(
-    []
+
+  const { symbols, symbolsQuery } = useContext(SymbolContext);
+  const { isLoading } = symbolsQuery;
+
+  const filteredData = useMemo(
+    () =>
+      symbols.filter(({ name }) =>
+        name.toLowerCase().includes(search.toLowerCase())
+      ) || [],
+    [symbols, search]
   );
-
-  const { symbolsQuery } = useContext(SymbolContext);
-  const { data, isLoading } = symbolsQuery;
-
-  useEffect(() => {
-    if (data) {
-      const filteredResults = data.symbols.filter(({ symbol }) =>
-        symbol.toLowerCase().includes(search.toLowerCase())
-      );
-
-      setFilteredSymbols(filteredResults);
-    } else {
-      setFilteredSymbols([]);
-    }
-  }, [data, search]);
 
   return (
     <aside className="border border-gray-200 rounded-lg flex flex-col gap-3 max-w-sm w-full px-2 py-8 shadow-xl h-full">
@@ -42,7 +35,7 @@ export function SymbolList() {
         />
       </div>
 
-      <SymbolCollection symbols={filteredSymbols} />
+      <SymbolCollection symbols={filteredData} />
 
       <button
         disabled={isLoading}
