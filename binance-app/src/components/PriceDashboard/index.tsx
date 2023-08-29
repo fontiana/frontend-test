@@ -1,22 +1,103 @@
 import { Badge } from '@/components/Badge';
+import { SymbolContext } from '@/contexts/SymbolContext';
 import { PlusCircle } from '@phosphor-icons/react';
+import { FormEvent, useContext, useEffect, useState } from 'react';
+
+interface DetailedSymbol {
+  lastPrice: number;
+  bestBidPrice: number;
+  bestAskPrice: number;
+  priceChangePercent: string;
+}
+
+type Symbol = Record<string, DetailedSymbol>;
+
+interface RealTimeSymbolList {
+  detailedSymbols: Symbol;
+}
 
 export function PriceDashboard() {
+  const [currentListIndex, setCurrentListIndex] = useState(0);
+  const [lists, setLists] = useState<number[]>([currentListIndex]);
+  const [detailedSymbolList, setDetailedSymbolList] =
+    useState<RealTimeSymbolList>({
+      detailedSymbols: {},
+    });
+
+  const { selectedSymbols } = useContext(SymbolContext);
+
+  const BASE_URL = 'wss://stream.binance.com:9443/stream?streams=';
+
+  const url =
+    BASE_URL +
+    selectedSymbols.map((symbol) => `${symbol.toLowerCase()}@ticker`).join('/');
+
+  useEffect(() => {
+    const socket = new WebSocket(url);
+
+    socket.onopen = (event) => {
+      console.log('Open connection: ', event);
+    };
+
+    socket.onerror = (event) => {
+      console.log('An error occurred: ', event);
+    };
+
+    socket.onmessage = (event) => {
+      const { data } = JSON.parse(event.data);
+
+      const formattedData = {
+        symbol: data.s,
+        lastPrice: Number(data.c).toFixed(4),
+        bestBidPrice: Number(data.b).toFixed(4),
+        bestAskPrice: Number(data.a).toFixed(4),
+        priceChangePercent: data.P,
+      };
+
+      setDetailedSymbolList((prev) => ({
+        ...prev,
+        detailedSymbols: {
+          ...prev.detailedSymbols,
+          [formattedData.symbol]: formattedData,
+        },
+      }));
+    };
+
+    return () => {
+      socket.close();
+
+      socket.onclose = (event) => {
+        console.log('Closed connection: ', event);
+      };
+    };
+  }, [url, selectedSymbols]);
+
+  function handleCreateRealTimeSymbolList(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setCurrentListIndex((state) => state + 1);
+    setLists((state) => [...state, currentListIndex + 1]);
+  }
+
   return (
     <main className="border border-gray-200 rounded-lg flex-1 flex flex-col gap-3 px-2 py-8 shadow-xl">
-      <header className="flex gap-2">
+      <form onSubmit={handleCreateRealTimeSymbolList} className="flex gap-2">
         <select
-          name=""
-          id=""
-          className="border border-gray-200 rounded px-3 py-2 w-full min-h-[2.625rem]"
+          placeholder="Create a new list"
+          className="inline-block border border-gray-200 rounded px-3 py-2 w-full min-h-[2.625rem]"
         >
-          <option value="list-a">List A</option>
+          {lists.map((_, index) => (
+            <option key={index}>List {index + 1}</option>
+          ))}
         </select>
 
-        <button className="bg-teal-500 p-2 rounded min-w-[2.625rem] flex items-center justify-center transition-colors hover:bg-teal-600">
+        <button
+          type="submit"
+          className="bg-teal-500 p-2 rounded min-w-[2.625rem] flex items-center justify-center transition-colors hover:bg-teal-600"
+        >
           <PlusCircle className="w-5 h-5 text-white" />
         </button>
-      </header>
+      </form>
 
       <div className="overflow-y-auto">
         <table className="w-full">
@@ -31,15 +112,28 @@ export function PriceDashboard() {
           </thead>
 
           <tbody>
-            <tr className="gap-8">
-              <th className="p-4 font-normal">ETHBTC</th>
-              <th className="p-4 font-normal">0.0025</th>
-              <th className="p-4 font-normal">0.0024</th>
-              <th className="p-4 font-normal">0.0026</th>
-              <th className="p-4 font-normal">
-                <Badge>250%</Badge>
-              </th>
-            </tr>
+            {Object.entries(detailedSymbolList.detailedSymbols).map(
+              ([
+                symbol,
+                { bestAskPrice, bestBidPrice, lastPrice, priceChangePercent },
+              ]) => {
+                const priceChange = Number(priceChangePercent.replace('%', ''));
+
+                return (
+                  <tr key={symbol} className="gap-8">
+                    <th className="p-4 font-normal">{symbol}</th>
+                    <th className="p-4 font-normal">{lastPrice}</th>
+                    <th className="p-4 font-normal">{bestBidPrice}</th>
+                    <th className="p-4 font-normal">{bestAskPrice}</th>
+                    <th className="p-4 font-normal">
+                      <Badge isNegative={priceChange < 0}>
+                        {priceChangePercent}%
+                      </Badge>
+                    </th>
+                  </tr>
+                );
+              }
+            )}
           </tbody>
         </table>
       </div>

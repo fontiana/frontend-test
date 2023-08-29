@@ -9,8 +9,11 @@ interface SymbolContextType {
   symbolsQuery: UseQueryResult<SymbolData>;
   symbols: Symbol[];
   allChecked: boolean;
-  checkAllSymbols: () => void;
+  selectedSymbols: string[];
+  checkAllFilteredSymbols: (filteredSymbols: Symbol[]) => void;
+  resetAllCheck: () => void;
   checkSymbol: (symbolName: string) => void;
+  addSymbolsToWatchList: (symbols: string[]) => void;
 }
 
 export interface SymbolData {
@@ -30,6 +33,7 @@ export function SymbolContextProvider({
   children,
 }: SymbolContextProviderProps) {
   const [symbols, setSymbols] = useState<Symbol[]>([]);
+  const [selectedSymbols, setSelectedSymbols] = useState<string[]>([]);
   const [allChecked, setAllChecked] = useState(false);
 
   const symbolsQuery = useQuery<SymbolData>(
@@ -64,14 +68,31 @@ export function SymbolContextProvider({
     setSymbols(checkedSymbols);
   }
 
-  function checkAllSymbols() {
+  function checkAllFilteredSymbols(filteredSymbols: Symbol[]) {
+    const updatedSymbols = symbols.map((symbol) => {
+      const foundSymbol = filteredSymbols.find(
+        (filteredSymbol) => filteredSymbol.name === symbol.name
+      );
+
+      return foundSymbol ? { ...foundSymbol, checked: !allChecked } : symbol;
+    });
+
+    setSymbols(updatedSymbols);
+    setAllChecked(!allChecked);
+  }
+
+  function resetAllCheck() {
     const checkedSymbols = symbols.map((symbol) => ({
       ...symbol,
-      checked: !allChecked,
+      checked: false,
     }));
 
     setSymbols(checkedSymbols);
-    setAllChecked(!allChecked);
+    setAllChecked(false);
+  }
+
+  function addSymbolsToWatchList(symbols: string[]) {
+    setSelectedSymbols(symbols);
   }
 
   return (
@@ -80,8 +101,11 @@ export function SymbolContextProvider({
         symbolsQuery,
         symbols,
         allChecked,
+        resetAllCheck,
+        selectedSymbols,
         checkSymbol,
-        checkAllSymbols,
+        checkAllFilteredSymbols,
+        addSymbolsToWatchList,
       }}
     >
       {children}

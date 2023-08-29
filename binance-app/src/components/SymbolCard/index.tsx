@@ -11,6 +11,7 @@ export function SymbolCard({ symbol, onCheck }: SymbolCardProps) {
   return (
     <div className={'p-4 flex items-center gap-8 h-[3.75rem]'}>
       <Checkbox.Root
+        id={`check-${symbol.name}`}
         checked={symbol.checked}
         onCheckedChange={onCheck}
         className="w-5 h-5 bg-white border border-gray-400 rounded"
@@ -20,7 +21,9 @@ export function SymbolCard({ symbol, onCheck }: SymbolCardProps) {
         </Checkbox.Indicator>
       </Checkbox.Root>
 
-      <span className="text-lg">{symbol.name}</span>
+      <label htmlFor={`check-${symbol.name}`} className="text-lg">
+        {symbol.name}
+      </label>
     </div>
   );
 }

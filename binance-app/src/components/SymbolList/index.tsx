@@ -7,16 +7,29 @@ import { SymbolCollection } from '../SymbolCollection';
 export function SymbolList() {
   const [search, setSearch] = useState('');
 
-  const { symbols, symbolsQuery } = useContext(SymbolContext);
+  const { symbols, symbolsQuery, addSymbolsToWatchList, resetAllCheck } =
+    useContext(SymbolContext);
   const { isLoading } = symbolsQuery;
 
   const filteredData = useMemo(
     () =>
-      symbols.filter(({ name }) =>
-        name.toLowerCase().includes(search.toLowerCase())
-      ) || [],
+      !search
+        ? symbols
+        : symbols.filter(({ name }) =>
+            name.toLowerCase().includes(search.toLowerCase())
+          ),
     [symbols, search]
   );
+
+  function handleAddSelectedSymbolsToWatchList() {
+    const selectedSymbols = symbols
+      .filter(({ checked }) => checked)
+      .map(({ name }) => name);
+
+    addSymbolsToWatchList(selectedSymbols);
+
+    resetAllCheck();
+  }
 
   return (
     <aside className="border border-gray-200 rounded-lg flex flex-col gap-3 max-w-sm w-full px-2 py-8 shadow-xl h-full">
@@ -39,6 +52,7 @@ export function SymbolList() {
 
       <button
         disabled={isLoading}
+        onClick={handleAddSelectedSymbolsToWatchList}
         className={classNames(
           'mt-auto text-xl text-white text-center w-full rounded py-3 transition-colors',
           {

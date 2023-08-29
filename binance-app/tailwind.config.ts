@@ -21,6 +21,11 @@ const config: Config = {
         200: '#c4f3d7',
         600: '#6bb68d',
       },
+      red: {
+        100: '#f9e6e6',
+        200: '#f3c4c4',
+        600: '#b66b6b',
+      },
       white: '#fff',
       black: '#000',
     },
