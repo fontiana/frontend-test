@@ -1,6 +1,6 @@
 import { Badge } from '@/components/Badge';
 import { SymbolContext } from '@/contexts/SymbolContext';
-import { PlusCircle } from '@phosphor-icons/react';
+import { PlusCircle, Target } from '@phosphor-icons/react';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 
 interface DetailedSymbol {
@@ -12,16 +12,22 @@ interface DetailedSymbol {
 
 type Symbol = Record<string, DetailedSymbol>;
 
-interface RealTimeSymbolList {
-  detailedSymbols: Symbol;
-}
+type RealTimeSymbolList = Record<
+  number,
+  {
+    detailedSymbols: Symbol;
+  }
+>;
 
 export function PriceDashboard() {
+  const [inStreamConnection, setInStreamConnection] = useState(false);
   const [currentListIndex, setCurrentListIndex] = useState(0);
   const [lists, setLists] = useState<number[]>([currentListIndex]);
   const [detailedSymbolList, setDetailedSymbolList] =
     useState<RealTimeSymbolList>({
-      detailedSymbols: {},
+      [currentListIndex]: {
+        detailedSymbols: {},
+      },
     });
 
   const { selectedSymbols } = useContext(SymbolContext);
@@ -33,49 +39,55 @@ export function PriceDashboard() {
     selectedSymbols.map((symbol) => `${symbol.toLowerCase()}@ticker`).join('/');
 
   useEffect(() => {
-    const socket = new WebSocket(url);
+    if (selectedSymbols.length > 0 && !inStreamConnection) {
+      const socket = new WebSocket(url);
 
-    socket.onopen = (event) => {
-      console.log('Open connection: ', event);
-    };
-
-    socket.onerror = (event) => {
-      console.log('An error occurred: ', event);
-    };
-
-    socket.onmessage = (event) => {
-      const { data } = JSON.parse(event.data);
-
-      const formattedData = {
-        symbol: data.s,
-        lastPrice: Number(data.c).toFixed(4),
-        bestBidPrice: Number(data.b).toFixed(4),
-        bestAskPrice: Number(data.a).toFixed(4),
-        priceChangePercent: data.P,
+      socket.onopen = (event) => {
+        setInStreamConnection(true);
+        console.log('Open connection: ', event);
       };
 
-      setDetailedSymbolList((prev) => ({
-        ...prev,
-        detailedSymbols: {
-          ...prev.detailedSymbols,
-          [formattedData.symbol]: formattedData,
-        },
-      }));
-    };
-
-    return () => {
-      socket.close();
-
-      socket.onclose = (event) => {
-        console.log('Closed connection: ', event);
+      socket.onerror = (event) => {
+        console.log('An error occurred: ', event);
       };
-    };
-  }, [url, selectedSymbols]);
+
+      socket.onmessage = (event) => {
+        const { data } = JSON.parse(event.data);
+
+        const formattedData = {
+          symbol: data.s,
+          lastPrice: Number(data.c).toFixed(4),
+          bestBidPrice: Number(data.b).toFixed(4),
+          bestAskPrice: Number(data.a).toFixed(4),
+          priceChangePercent: data.P,
+        };
+
+        setDetailedSymbolList((prev) => ({
+          ...prev,
+          [currentListIndex]: {
+            detailedSymbols: {
+              ...prev[currentListIndex]?.detailedSymbols,
+              [formattedData.symbol]: formattedData,
+            },
+          },
+        }));
+      };
+
+      return () => {
+        socket.close();
+
+        setInStreamConnection(false);
+        socket.onclose = (event) => {
+          console.log('Closed connection: ', event);
+        };
+      };
+    }
+  }, [url, currentListIndex]);
 
   function handleCreateRealTimeSymbolList(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    setCurrentListIndex((state) => state + 1);
+    setCurrentListIndex(lists.length);
     setLists((state) => [...state, currentListIndex + 1]);
   }
 
@@ -83,6 +95,8 @@ export function PriceDashboard() {
     <main className="w-full border border-gray-200 rounded-lg flex-1 flex flex-col gap-3 px-2 py-8 shadow-xl">
       <form onSubmit={handleCreateRealTimeSymbolList} className="flex gap-2">
         <select
+          value={`List ${currentListIndex + 1}`}
+          onChange={(event) => setCurrentListIndex(event.target.selectedIndex)}
           placeholder="Create a new list"
           className="inline-block border border-gray-200 rounded px-3 py-2 w-full min-h-[2.625rem]"
         >
@@ -112,51 +126,56 @@ export function PriceDashboard() {
           </thead>
 
           <tbody>
-            {Object.entries(detailedSymbolList.detailedSymbols).map(
-              ([
-                symbol,
-                { bestAskPrice, bestBidPrice, lastPrice, priceChangePercent },
-              ]) => {
-                const priceChange = Number(priceChangePercent.replace('%', ''));
+            {detailedSymbolList[currentListIndex]?.detailedSymbols &&
+              Object.entries(
+                detailedSymbolList[currentListIndex].detailedSymbols
+              ).map(
+                ([
+                  symbol,
+                  { bestAskPrice, bestBidPrice, lastPrice, priceChangePercent },
+                ]) => {
+                  const priceChange = Number(
+                    priceChangePercent.replace('%', '')
+                  );
 
-                return (
-                  <tr
-                    key={symbol}
-                    className="gap-8 text-xs sm:text-base text-center"
-                  >
-                    <td className="p-4 truncate max-w-[100px]" title={symbol}>
-                      {symbol}
-                    </td>
-                    <td
-                      className="p-4 truncate max-w-[100px]"
-                      title={String(lastPrice)}
+                  return (
+                    <tr
+                      key={symbol}
+                      className="gap-8 text-xs sm:text-base text-center"
                     >
-                      {lastPrice}
-                    </td>
-                    <td
-                      className="p-4 truncate max-w-[100px]"
-                      title={String(bestBidPrice)}
-                    >
-                      {bestBidPrice}
-                    </td>
-                    <td
-                      className="p-4 truncate max-w-[100px]"
-                      title={String(bestAskPrice)}
-                    >
-                      {bestAskPrice}
-                    </td>
-                    <td
-                      className="p-4 truncate max-w-[100px]"
-                      title={priceChangePercent}
-                    >
-                      <Badge isNegative={priceChange < 0}>
-                        {priceChangePercent}%
-                      </Badge>
-                    </td>
-                  </tr>
-                );
-              }
-            )}
+                      <td className="p-4 truncate max-w-[100px]" title={symbol}>
+                        {symbol}
+                      </td>
+                      <td
+                        className="p-4 truncate max-w-[100px]"
+                        title={String(lastPrice)}
+                      >
+                        {lastPrice}
+                      </td>
+                      <td
+                        className="p-4 truncate max-w-[100px]"
+                        title={String(bestBidPrice)}
+                      >
+                        {bestBidPrice}
+                      </td>
+                      <td
+                        className="p-4 truncate max-w-[100px]"
+                        title={String(bestAskPrice)}
+                      >
+                        {bestAskPrice}
+                      </td>
+                      <td
+                        className="p-4 truncate max-w-[100px]"
+                        title={priceChangePercent}
+                      >
+                        <Badge isNegative={priceChange < 0}>
+                          {priceChangePercent}%
+                        </Badge>
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
           </tbody>
         </table>
       </div>
