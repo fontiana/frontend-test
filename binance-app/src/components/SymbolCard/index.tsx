@@ -21,7 +21,7 @@ export function SymbolCard({ symbol, onCheck }: SymbolCardProps) {
         </Checkbox.Indicator>
       </Checkbox.Root>
 
-      <label htmlFor={`check-${symbol.name}`} className="text-lg">
+      <label htmlFor={`check-${symbol.name}`} className="text-sm sm:text-lg">
         {symbol.name}
       </label>
     </div>

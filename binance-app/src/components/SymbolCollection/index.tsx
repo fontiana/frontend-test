@@ -26,7 +26,7 @@ export function SymbolCollection({ symbols }: SymbolCollectionProps) {
           </Checkbox.Indicator>
         </Checkbox.Root>
 
-        <label htmlFor="allChecked" className="text-lg font-bold">
+        <label htmlFor="allChecked" className="text-sm sm:text-lg font-bold">
           Symbol
         </label>
       </header>

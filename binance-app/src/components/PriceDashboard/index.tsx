@@ -80,7 +80,7 @@ export function PriceDashboard() {
   }
 
   return (
-    <main className="border border-gray-200 rounded-lg flex-1 flex flex-col gap-3 px-2 py-8 shadow-xl">
+    <main className="w-full border border-gray-200 rounded-lg flex-1 flex flex-col gap-3 px-2 py-8 shadow-xl">
       <form onSubmit={handleCreateRealTimeSymbolList} className="flex gap-2">
         <select
           placeholder="Create a new list"
@@ -99,10 +99,10 @@ export function PriceDashboard() {
         </button>
       </form>
 
-      <div className="overflow-y-auto">
+      <div className="overflow-auto">
         <table className="w-full">
           <thead className="h-[3.75rem]">
-            <tr className="gap-8 bg-gray-200">
+            <tr className="gap-8 bg-gray-200 text-sm sm:text-base whitespace-nowrap">
               <th className="p-4">Symbol</th>
               <th className="p-4">Last Price</th>
               <th className="p-4">Bid Price</th>
@@ -120,16 +120,39 @@ export function PriceDashboard() {
                 const priceChange = Number(priceChangePercent.replace('%', ''));
 
                 return (
-                  <tr key={symbol} className="gap-8">
-                    <th className="p-4 font-normal">{symbol}</th>
-                    <th className="p-4 font-normal">{lastPrice}</th>
-                    <th className="p-4 font-normal">{bestBidPrice}</th>
-                    <th className="p-4 font-normal">{bestAskPrice}</th>
-                    <th className="p-4 font-normal">
+                  <tr
+                    key={symbol}
+                    className="gap-8 text-xs sm:text-base text-center"
+                  >
+                    <td className="p-4 truncate max-w-[100px]" title={symbol}>
+                      {symbol}
+                    </td>
+                    <td
+                      className="p-4 truncate max-w-[100px]"
+                      title={String(lastPrice)}
+                    >
+                      {lastPrice}
+                    </td>
+                    <td
+                      className="p-4 truncate max-w-[100px]"
+                      title={String(bestBidPrice)}
+                    >
+                      {bestBidPrice}
+                    </td>
+                    <td
+                      className="p-4 truncate max-w-[100px]"
+                      title={String(bestAskPrice)}
+                    >
+                      {bestAskPrice}
+                    </td>
+                    <td
+                      className="p-4 truncate max-w-[100px]"
+                      title={priceChangePercent}
+                    >
                       <Badge isNegative={priceChange < 0}>
                         {priceChangePercent}%
                       </Badge>
-                    </th>
+                    </td>
                   </tr>
                 );
               }
