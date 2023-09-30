@@ -1,5 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { Symbol } from "@/lib/types";
+import { Symbol } from "@/context/SymbolContext";
 
 interface SymbolSelectionItemProps {
   symbol: Symbol;
@@ -19,7 +19,7 @@ export default function SymbolSelectionItem({
       <Checkbox
         id={symbol.name}
         checked={symbol.checked}
-        className="rounded bg-gray-900 text-gray-500"
+        className="rounded bg-gray-900 text-gray-400"
         onCheckedChange={handleChange}
       />
       <label htmlFor={symbol.name} className="text-gray-300 text-sm">

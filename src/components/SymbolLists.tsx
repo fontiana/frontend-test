@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { X } from "lucide-react";
 
 import Modal from "react-modal";
 
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 import {
   Select,
@@ -13,10 +15,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { Button } from "@/components/ui/button";
-
-import { Label } from "@/components/ui/label";
-
 import {
   Table,
   TableBody,
@@ -25,9 +23,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useSymbols } from "@/context/SymbolContext";
 
 export default function SymbolLists() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { selectedSymbols } = useSymbols();
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -41,7 +41,7 @@ export default function SymbolLists() {
     <div className="flex flex-col bg-gray-800 border border-gray-600 w-[600px] rounded p-2 ">
       <div className="flex gap-2">
         <Select>
-          <SelectTrigger className="w-[550px] rounded bg-gray-900 text-gray-500 cursor-pointer">
+          <SelectTrigger className="w-[550px] rounded bg-gray-900 text-gray-400 border border-gray-500 cursor-pointer">
             <SelectValue placeholder="Lists" />
           </SelectTrigger>
           <SelectContent className="w-[550px] rounded bg-gray-900 text-gray-300">
@@ -68,59 +68,31 @@ export default function SymbolLists() {
       <div>
         <Table>
           <TableHeader>
-            <TableRow className="my-2 border border-gray-800 text-gray-300">
+            <TableRow className="my-3 border border-gray-800 text-gray-300">
               <TableHead className="w-[35px]">Symbol</TableHead>
               <TableHead className="w-[35px]">Last Price</TableHead>
               <TableHead className="w-[35px]">Bid Price</TableHead>
               <TableHead className="w-[35px]">Ask Price</TableHead>
-              <TableHead className="w-[95px]">Prince Change</TableHead>
+              <TableHead className="w-[100px]">Prince Change</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow className="bg-gray-500 my-2 border border-gray-800 rounded border-2 text-gray-300">
-              <TableCell>ETHBTC</TableCell>
-              <TableCell>0.0025</TableCell>
-              <TableCell>0.0024</TableCell>
-              <TableCell>0.0026</TableCell>
-              <TableCell>
-                <span className="text-teal-500 bg-teal-800 rounded-[0.5rem] p-1">
-                  250%
-                </span>
-              </TableCell>
-            </TableRow>
-            <TableRow className="bg-gray-500 my-2 border border-gray-800 rounded border-2 text-gray-300">
-              <TableCell>ETHBTC</TableCell>
-              <TableCell>0.0025</TableCell>
-              <TableCell>0.0024</TableCell>
-              <TableCell>0.0026</TableCell>
-              <TableCell>
-                <span className="text-teal-500 bg-teal-800 rounded-[0.5rem] p-1">
-                  250%
-                </span>
-              </TableCell>
-            </TableRow>
-            <TableRow className="bg-gray-500 my-2 border border-gray-800 rounded border-2 text-gray-300">
-              <TableCell>ETHBTC</TableCell>
-              <TableCell>0.0025</TableCell>
-              <TableCell>0.0024</TableCell>
-              <TableCell>0.0026</TableCell>
-              <TableCell>
-                <span className="text-teal-500 bg-teal-800 rounded-[0.5rem] p-1">
-                  250%
-                </span>
-              </TableCell>
-            </TableRow>
-            <TableRow className="bg-gray-500 my-2 border border-gray-800 rounded border-2 text-gray-300">
-              <TableCell>ETHBTC</TableCell>
-              <TableCell>0.0025</TableCell>
-              <TableCell>0.0024</TableCell>
-              <TableCell>0.0026</TableCell>
-              <TableCell>
-                <span className="text-teal-500 bg-teal-800 rounded-[0.5rem] p-1">
-                  250%
-                </span>
-              </TableCell>
-            </TableRow>
+            {selectedSymbols.map((symbol) => (
+              <TableRow
+                key={symbol.name}
+                className="bg-gray-500 my-2 border border-gray-800 rounded border-2 text-gray-300"
+              >
+                <TableCell>{symbol.name}</TableCell>
+                <TableCell>0.0025</TableCell>
+                <TableCell>0.0024</TableCell>
+                <TableCell>0.0026</TableCell>
+                <TableCell>
+                  <span className="text-teal-500 bg-teal-800 rounded-[0.5rem] p-1">
+                    250%
+                  </span>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
 

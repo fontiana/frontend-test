@@ -1,61 +1,28 @@
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Symbol } from "@/lib/types";
-import SymbolSelectionItem from "./Symbol";
-import { useState } from "react";
+import { Input } from "@/components/ui/input";
 
-const symbolListFromContext: Array<Symbol> = [
-  {
-    name: "1",
-    checked: false,
-  },
-  {
-    name: "2",
-    checked: false,
-  },
-  {
-    name: "3",
-    checked: false,
-  },
-  {
-    name: "4",
-    checked: false,
-  },
-  {
-    name: "5",
-    checked: false,
-  },
-];
+import { Symbol, useSymbols } from "@/context/SymbolContext";
+import { useContext, useState } from "react";
+import { useQuery } from "react-query";
+import { useForm } from "react-hook-form";
+import SymbolSelectionItem from "./SymbolSelectionItem";
 
 export default function SymbolSelection() {
-  const [symbolList, setSymbolList] = useState(symbolListFromContext);
-
-  const handleUpdateList = (symbol: Symbol) => {
-    console.log({ symbol });
-
-    setSymbolList((prevSymbolList) => {
-      return prevSymbolList.map((item) => {
-        if (item.name === symbol.name) {
-          return { ...symbol, checked: !symbol.checked };
-        }
-        return item;
-      });
-    });
-  };
+  const { symbols, handleSelectSymbol } = useSymbols();
 
   return (
     <div className="flex flex-col bg-gray-800 rounded p-2 gap-2 justify-between">
       <Input
-        placeholder="search"
-        className="w-[200px] rounded bg-gray-900 text-gray-500"
+        placeholder="Search for Symbols"
+        className="w-[200px] rounded bg-gray-900 text-gray-400 border border-gray-500 "
       />
 
       <div className="flex flex-col overflow-auto h-[190px]">
-        {symbolList.map((symbol) => (
+        {symbols.map((symbol) => (
           <SymbolSelectionItem
             key={symbol.name}
             symbol={symbol}
-            onCheck={(item) => handleUpdateList(item)}
+            onCheck={handleSelectSymbol}
           />
         ))}
       </div>
