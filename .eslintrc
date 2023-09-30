@@ -38,15 +38,15 @@
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-duplicates": "error",
-    "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
+    "simple-import-sort/imports": "off",
+    "simple-import-sort/exports": "off"
   },
   "overrides": [
     {
       "files": ["**/*.js", "**/*.ts", "**/*.tsx"],
       "rules": {
         "simple-import-sort/imports": [
-          "error",
+          "off",
           {
             "groups": [
               ["^react$", "^next", "@next"],
