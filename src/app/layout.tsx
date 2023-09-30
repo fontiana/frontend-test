@@ -1,4 +1,4 @@
-import StateProvider from "@/providers/StateProvider";
+import StateProvider from "@/providers/stateProvider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
