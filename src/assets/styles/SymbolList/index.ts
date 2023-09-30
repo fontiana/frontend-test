@@ -44,7 +44,7 @@ export const SearchIconSpan = styled.span`
 `;
 
 export const ListContainer = styled.div`
-  max-height: 60vh;
+  max-height: 70vh;
   overflow-y: auto;
   box-shadow: 0 0 0.2em #ccc;
   border-radius: 0.5em;
