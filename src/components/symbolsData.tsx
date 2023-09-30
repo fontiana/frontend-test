@@ -9,11 +9,13 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useWebSocket from "react-use-websocket";
 
 export default function PriceTable() {
   const pricesList = useSelector((state: RootState) => state.priceList);
+  const [socket, setSocket] = useState(null);
   const { selected, groups } = useSelector(
     (state: RootState) => state.groupsList
   );
