@@ -12,6 +12,7 @@ import {
   TableHeaderCell,
   TableRow,
 } from '../../assets/styles/UserDashboard';
+import DashboardPriceBox from '../DashboardPriceBox';
 
 interface TableProps {
   symbol: string;
@@ -77,7 +78,9 @@ export default function UserDashboard() {
               <TableCell>{item.lastPrice}</TableCell>
               <TableCell>{item.bidPrice}</TableCell>
               <TableCell>{item.askPrice}</TableCell>
-              <PercentageCell>{item.priceChange}</PercentageCell>
+              <PercentageCell>
+                <DashboardPriceBox priceChange={item.priceChange} />
+              </PercentageCell>
             </TableRow>
           ))}
         </tbody>

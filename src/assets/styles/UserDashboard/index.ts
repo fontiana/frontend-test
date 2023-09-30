@@ -79,6 +79,4 @@ export const SymbolCell = styled(TableCell)`
   font-weight: bold;
 `;
 
-export const PercentageCell = styled(TableCell)`
-  color: green;
-`;
+export const PercentageCell = styled(TableCell)``;
