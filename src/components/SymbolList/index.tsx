@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {
   Container,
   ListContainer,
@@ -9,13 +9,11 @@ import {
 
 import {FaSearch} from 'react-icons/fa';
 import SymbolElement from '../SymbolElement';
-
-const data: string[] = Array.from(
-  {length: 50},
-  (_, index) => `BBBSDH2${index + 1}`,
-);
+import {SymbolContext} from '../../contexts/SymbolContext';
 
 export default function SymbolList() {
+  const {symbols} = useContext(SymbolContext);
+
   return (
     <Container>
       <SearchContainer>
@@ -25,8 +23,8 @@ export default function SymbolList() {
         </SearchIconSpan>
       </SearchContainer>
       <ListContainer>
-        {data.map((item, index) => (
-          <SymbolElement key={index} symbol={item} />
+        {symbols.map(data => (
+          <SymbolElement key={data.symbol} symbol={data.symbol} />
         ))}
       </ListContainer>
     </Container>
