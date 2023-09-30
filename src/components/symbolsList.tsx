@@ -4,13 +4,13 @@ import {
   addSymbols as addSymbolToGroup,
   setSelected,
 } from "@/reducers/groupListSlice";
+import { removePrices } from "@/reducers/priceListSlice";
 import {
   SymbolItemType,
   addSymbols,
   clearSymbols,
 } from "@/reducers/symbolsListSlice";
 import { ExchangeType } from "@/types/exchange";
-import { AddBox } from "@mui/icons-material";
 import {
   Autocomplete,
   Chip,
@@ -21,7 +21,6 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Icon from "./icons";
 
 function sleep(duration: number): Promise<void> {
   return new Promise<void>((resolve) => {
@@ -73,7 +72,7 @@ export default function SymbolsList() {
     const controller = new AbortController();
     const fetchData = async () => {
       await axios
-        .get<ExchangeType>("https://data.binance.com/api/v3/exchangeInfo")
+        .get<ExchangeType>(process.env.URL_EXCHANGE_INFO || "")
         .then((response) => {
           const symbols = response.data.symbols;
           const symbolsList = symbols.map(({ symbol }, index) => {
@@ -96,11 +95,13 @@ export default function SymbolsList() {
   useEffect(() => {
     if (selected) {
       setSelected(selected);
+      dispatch(removePrices());
       setValue(groups[selected - 1]?.symbols || 0);
     } else {
       setSelected();
+      dispatch(removePrices());
     }
-  }, [selected, groups]);
+  }, [selected, groups, dispatch]);
 
   const addSymbolToList = (symbols: SymbolItemType[]) => {
     dispatch(addSymbolToGroup(symbols));
@@ -173,7 +174,6 @@ export default function SymbolsList() {
             </Tooltip>
           )}
         />
-        <Icon onClick={() => console.log()} icon={<AddBox />} />
       </div>
     </>
   );

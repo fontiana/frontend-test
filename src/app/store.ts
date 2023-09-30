@@ -1,4 +1,5 @@
 import groupListSlice from "@/reducers/groupListSlice";
+import priceListSlice from "@/reducers/priceListSlice";
 import symbolsListSlice from "@/reducers/symbolsListSlice";
 import { configureStore } from "@reduxjs/toolkit";
 
@@ -17,6 +18,7 @@ export const store = configureStore({
   reducer: {
     symbolsList: symbolsListSlice,
     groupsList: persistedGroups,
+    priceList: priceListSlice,
   },
   middleware: [thunk],
 });

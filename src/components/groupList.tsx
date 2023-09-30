@@ -1,6 +1,7 @@
 "use client";
 import { RootState } from "@/app/store";
 import { addGroup, removeGroup, setSelected } from "@/reducers/groupListSlice";
+import { removePrices } from "@/reducers/priceListSlice";
 import { SymbolItemType } from "@/reducers/symbolsListSlice";
 import { Delete } from "@mui/icons-material";
 import {
@@ -66,6 +67,7 @@ export default function GroupList() {
       symbols: [],
     });
     dispatch(setSelected(dialogValue.index));
+    dispatch(removePrices());
     dispatch(addGroup({ name: dialogValue.name }));
     handleClose();
   };
@@ -103,6 +105,7 @@ export default function GroupList() {
             } else {
               setSelectedGroup(newValue);
               dispatch(setSelected(newValue?.index || undefined));
+              dispatch(removePrices());
             }
           }}
           filterOptions={(options, params) => {
