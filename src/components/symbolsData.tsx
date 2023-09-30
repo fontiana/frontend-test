@@ -9,7 +9,6 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useWebSocket from "react-use-websocket";
 
@@ -18,7 +17,6 @@ export default function PriceTable() {
   const { selected, groups } = useSelector(
     (state: RootState) => state.groupsList
   );
-  const [socket, setSocket] = useState(null);
   const dispatch = useDispatch();
 
   let symbolsUrl = groups[(selected || 0) - 1]?.symbols
@@ -28,18 +26,11 @@ export default function PriceTable() {
     ? `${process.env.URL_WEBSOCKET}?streams=${symbolsUrl}`
     : process.env.URL_WEBSOCKET;
 
-  const {
-    sendMessage,
-    sendJsonMessage,
-    lastMessage,
-    lastJsonMessage,
-    readyState,
-    getWebSocket,
-  } = useWebSocket(websocketUrl || "", {
-    onOpen: () => console.log(`Connected to websocket server!`),
-    onClose: () => console.log(`Disconnecting to websocket server...`),
+  useWebSocket(websocketUrl || "", {
+    onOpen: () => console.info(`Connected to websocket server!`),
+    onClose: () => console.info(`Disconnecting to websocket server...`),
     onError: (error) =>
-      console.log(`Failed to connect to websocket server: ${error}`),
+      console.error(`Failed to connect to websocket server: ${error}`),
     onMessage: (message: MessageEvent) =>
       SetSymbolPriceData(JSON.parse(message.data)),
     shouldReconnect: (closeEvent) => true,
@@ -58,6 +49,9 @@ export default function PriceTable() {
     dispatch(addPrices(FilteredData));
   };
 
+  let selectedsSymbols = groups[(selected || 0) - 1]?.symbols.length || 0;
+  let listedSymbols = pricesList.symbols.length || 0;
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -71,7 +65,7 @@ export default function PriceTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {pricesList.symbols.length != 0 ? (
+          {listedSymbols != 0 &&
             pricesList.symbols.map((price, index) => (
               <TableRow
                 key={index}
@@ -85,8 +79,18 @@ export default function PriceTable() {
                 <TableCell align="right">{price.bestAskPrice}</TableCell>
                 <TableCell align="right">{price.priceChangePercent}</TableCell>
               </TableRow>
-            ))
-          ) : (
+            ))}
+          {selectedsSymbols != 0 && listedSymbols != selectedsSymbols && (
+            <TableRow
+              key={0}
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                Loading the data...
+              </TableCell>
+            </TableRow>
+          )}
+          {selectedsSymbols == 0 && (
             <TableRow
               key={0}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -96,18 +100,6 @@ export default function PriceTable() {
               </TableCell>
             </TableRow>
           )}
-          {pricesList.symbols.length != 0 &&
-            pricesList.symbols.length !=
-              groups[(selected || 0) - 1]?.symbols.length && (
-              <TableRow
-                key={0}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  Carregando o restante dos dados...
-                </TableCell>
-              </TableRow>
-            )}
         </TableBody>
       </Table>
     </TableContainer>
