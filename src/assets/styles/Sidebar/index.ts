@@ -2,10 +2,9 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   overflow: hidden;
-  position: fixed;
   left: 2;
   width: 30vh;
-  height: 95vh;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

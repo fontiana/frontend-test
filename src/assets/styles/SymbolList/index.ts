@@ -4,7 +4,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2em;
-  padding-top: 0.5em;
+  margin-top: 0.5em;
 `;
 
 export const SearchContainer = styled.div`
@@ -44,7 +44,7 @@ export const SearchIconSpan = styled.span`
 `;
 
 export const ListContainer = styled.div`
-  max-height: 80vh;
+  max-height: 60vh;
   overflow-y: auto;
   box-shadow: 0 0 0.2em #ccc;
   border-radius: 0.5em;
