@@ -9,7 +9,7 @@ export const StyledButton = styled.button`
   width: 80%;
   cursor: pointer;
   &:hover {
-    opacity: 0.7;
+    opacity: 0.9;
   }
   &:active {
     box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
