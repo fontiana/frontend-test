@@ -1,6 +1,8 @@
 "use client";
 import { RootState } from "@/app/store";
-import { addGroup } from "@/reducers/groupListSlice";
+import { addGroup, removeGroup, setSelected } from "@/reducers/groupListSlice";
+import { SymbolItemType } from "@/reducers/symbolsListSlice";
+import { Delete } from "@mui/icons-material";
 import {
   Button,
   Dialog,
@@ -13,21 +15,35 @@ import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Icon from "./icons";
 
 interface GroupOptionType {
   inputValue?: string;
   name: string;
   index: number;
+  symbols: SymbolItemType[];
 }
 
 const filter = createFilterOptions<GroupOptionType>();
 
-export default function FreeSoloCreateOption() {
+export default function GroupList() {
   const dispatch = useDispatch();
 
-  const [value, setValue] = useState<GroupOptionType | null>(null);
-  const [open, toggleOpen] = useState(false);
   const groupsList = useSelector((state: RootState) => state.groupsList);
+
+  const savedList = groupsList.groups
+    .map((group) => {
+      return {
+        index: group.index,
+        name: group.name,
+        symbols: [],
+      };
+    })
+    .find((group) => group.index == groupsList.selected);
+  const [selectedGroup, setSelectedGroup] = useState<GroupOptionType | null>(
+    savedList || null
+  );
+  const [open, toggleOpen] = useState(false);
 
   const handleClose = () => {
     setDialogValue({
@@ -42,27 +58,33 @@ export default function FreeSoloCreateOption() {
     index: 0,
   });
 
-  const addGroupList = (name: string) => {};
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const addGroupList = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setValue({
+    setSelectedGroup({
       name: dialogValue.name,
       index: dialogValue.index,
+      symbols: [],
     });
+    dispatch(setSelected(dialogValue.index));
     dispatch(addGroup({ name: dialogValue.name }));
     handleClose();
+  };
+
+  const removeGroupList = () => {
+    if (selectedGroup && selectedGroup.index) {
+      dispatch(removeGroup(selectedGroup));
+      setSelectedGroup({ index: 0, name: "", symbols: [] });
+    }
   };
 
   return (
     <>
       <h1>Groups:</h1>
-      <div className="flex flex-row">
+      <div className="flex flex-row items-center ">
         <Autocomplete
           size="small"
-          value={value}
+          value={selectedGroup}
           onChange={(event, newValue) => {
-            console.log(`newValue`, newValue);
             if (typeof newValue === "string") {
               // timeout to avoid instant validation of the dialog's form.
               setTimeout(() => {
@@ -79,7 +101,8 @@ export default function FreeSoloCreateOption() {
                 index: groupsList.groups.length + 1,
               });
             } else {
-              setValue(newValue);
+              setSelectedGroup(newValue);
+              dispatch(setSelected(newValue?.index || undefined));
             }
           }}
           filterOptions={(options, params) => {
@@ -90,6 +113,7 @@ export default function FreeSoloCreateOption() {
                 inputValue: params.inputValue,
                 name: `Add "${params.inputValue}"`,
                 index: 0,
+                symbols: [],
               });
             }
 
@@ -123,18 +147,20 @@ export default function FreeSoloCreateOption() {
             <TextField {...params} label="Select a saved symbols list" />
           )}
         />
+        <Icon icon={<Delete />} onClick={removeGroupList} />
       </div>
+
       <Dialog open={open} onClose={handleClose}>
-        <form onSubmit={handleSubmit}>
-          <DialogTitle>Add a new film</DialogTitle>
+        <form onSubmit={addGroupList}>
+          <DialogTitle>Add a new symbols list</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Did you miss any film in our list? Please, add it!
+              Do you want to add another symbol list?
             </DialogContentText>
             <TextField
               autoFocus
               margin="dense"
-              id="name"
+              id="symbolListName"
               value={dialogValue.name}
               onChange={(event) =>
                 setDialogValue({
@@ -142,7 +168,7 @@ export default function FreeSoloCreateOption() {
                   name: event.target.value,
                 })
               }
-              label="title"
+              label="List name"
               type="text"
               variant="standard"
             />

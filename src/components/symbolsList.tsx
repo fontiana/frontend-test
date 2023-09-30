@@ -1,16 +1,27 @@
 "use client";
 import { RootState } from "@/app/store";
 import {
+  addSymbols as addSymbolToGroup,
+  setSelected,
+} from "@/reducers/groupListSlice";
+import {
   SymbolItemType,
   addSymbols,
   clearSymbols,
 } from "@/reducers/symbolsListSlice";
 import { ExchangeType } from "@/types/exchange";
 import { AddBox } from "@mui/icons-material";
-import { Autocomplete, CircularProgress, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Chip,
+  CircularProgress,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Icon from "./icons";
 
 function sleep(duration: number): Promise<void> {
   return new Promise<void>((resolve) => {
@@ -22,10 +33,14 @@ function sleep(duration: number): Promise<void> {
 
 export default function SymbolsList() {
   const symbolsList = useSelector((state: RootState) => state.symbolsList);
+  const { selected, groups } = useSelector(
+    (state: RootState) => state.groupsList
+  );
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState<SymbolItemType[]>([]);
+  const [value, setValue] = useState<SymbolItemType[] | undefined>([]);
   const loading = open && options.length === 0;
 
   useEffect(() => {
@@ -78,11 +93,27 @@ export default function SymbolsList() {
     return () => controller.abort();
   }, [dispatch]);
 
+  useEffect(() => {
+    if (selected) {
+      setSelected(selected);
+      setValue(groups[selected - 1]?.symbols || 0);
+    } else {
+      setSelected();
+    }
+  }, [selected, groups]);
+
+  const addSymbolToList = (symbols: SymbolItemType[]) => {
+    dispatch(addSymbolToGroup(symbols));
+  };
+
   return (
     <>
       <h1>Symbols:</h1>
-      <div className="flex flex-row">
+      <div className="flex flex-row items-center">
         <Autocomplete
+          multiple
+          disabled={!selected}
+          value={selected ? value : []}
           id="asynchronous-demo"
           sx={{ width: 300 }}
           open={open}
@@ -92,12 +123,26 @@ export default function SymbolsList() {
           onClose={() => {
             setOpen(false);
           }}
+          onChange={(event: any, newValue) => {
+            setValue(newValue);
+            if (newValue) addSymbolToList(newValue);
+          }}
           isOptionEqualToValue={(option, value) =>
             option.symbol === value.symbol
           }
           getOptionLabel={(option) => option.symbol}
           options={options}
           loading={loading}
+          renderTags={(tagValue, getTagProps) => {
+            return tagValue.map((option, index) => (
+              <Chip
+                {...getTagProps({ index })}
+                key={option.index}
+                label={option.symbol}
+                variant="outlined"
+              />
+            ));
+          }}
           renderOption={(props, option, { selected }) => (
             <li
               {...props}
@@ -108,25 +153,27 @@ export default function SymbolsList() {
             </li>
           )}
           renderInput={(params) => (
-            <TextField
-              {...params}
-              size="small"
-              label="Symbol"
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: (
-                  <>
-                    {loading ? (
-                      <CircularProgress color="inherit" size={20} />
-                    ) : null}
-                    {params.InputProps.endAdornment}
-                  </>
-                ),
-              }}
-            />
+            <Tooltip title={!selected && "First, select a list"}>
+              <TextField
+                {...params}
+                size="small"
+                label="Symbol"
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <>
+                      {loading ? (
+                        <CircularProgress color="inherit" size={20} />
+                      ) : null}
+                      {params.InputProps.endAdornment}
+                    </>
+                  ),
+                }}
+              />
+            </Tooltip>
           )}
         />
-        <AddBox className="w-8 h-8 cursor-pointer" />
+        <Icon onClick={() => console.log()} icon={<AddBox />} />
       </div>
     </>
   );
