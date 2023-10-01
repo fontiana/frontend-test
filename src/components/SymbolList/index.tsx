@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {
   Container,
   ListContainer,
@@ -14,16 +14,27 @@ import {SymbolContext} from '../../contexts/SymbolContext';
 export default function SymbolList() {
   const {symbols} = useContext(SymbolContext);
 
+  const [searchValue, setSearchValue] = useState('');
+
+  const filteredSymbols = symbols.filter(data =>
+    data.symbol.toLowerCase().includes(searchValue.toLowerCase()),
+  );
+
   return (
     <Container>
       <SearchContainer>
-        <SearchInput type="text" placeholder="Search" />
+        <SearchInput
+          value={searchValue}
+          type="text"
+          placeholder="Search"
+          onChange={({target}) => setSearchValue(target.value)}
+        />
         <SearchIconSpan>
           <FaSearch />
         </SearchIconSpan>
       </SearchContainer>
       <ListContainer>
-        {symbols.map(data => (
+        {filteredSymbols.map(data => (
           <SymbolElement key={data.symbol} symbol={data.symbol} />
         ))}
       </ListContainer>
