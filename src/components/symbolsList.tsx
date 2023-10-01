@@ -115,7 +115,7 @@ export default function SymbolsList() {
           className="grow"
           disabled={!selected}
           value={selected ? value : []}
-          id="asynchronous-demo"
+          id="symbolsListInput"
           sx={{ width: 300 }}
           open={open}
           onOpen={() => {

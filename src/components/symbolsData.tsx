@@ -85,7 +85,11 @@ export default function PriceTable() {
   }
 
   return (
-    <TableContainer component={Paper} className="my-4">
+    <TableContainer
+      component={Paper}
+      className="my-4"
+      id="symbolsDataPriceTable"
+    >
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>

@@ -125,7 +125,7 @@ export default function GroupList() {
           selectOnFocus
           clearOnBlur
           handleHomeEndKeys
-          id="free-solo-with-text-demo"
+          id="symbolsGroupListInput"
           options={groupsList.groups}
           getOptionLabel={(option) => {
             // Value selected with enter, right from the input
@@ -151,6 +151,7 @@ export default function GroupList() {
         <Tooltip title="Delete selected list">
           <div
             onClick={removeGroupList}
+            id="deleteSymbolsList"
             className="w-10 h-10 rounded cursor-pointer bg-red-400 text-white p-1 flex justify-center items-center"
           >
             <Delete />
@@ -169,7 +170,7 @@ export default function GroupList() {
               className="w-full"
               autoFocus
               margin="dense"
-              id="symbolListName"
+              id="addSymbolListNameInput"
               value={dialogValue.name}
               onChange={(event) =>
                 setDialogValue({
@@ -183,8 +184,12 @@ export default function GroupList() {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit">Add</Button>
+            <Button onClick={handleClose} id="cancelSymbolsList">
+              Cancel
+            </Button>
+            <Button type="submit" id="saveSymbolsList">
+              Add
+            </Button>
           </DialogActions>
         </form>
       </Dialog>
