@@ -1,5 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { Symbol } from "@/context/SymbolContext";
+import { Symbol } from "@/lib/useSymbols";
 
 interface SymbolSelectionItemProps {
   symbol: Symbol;
