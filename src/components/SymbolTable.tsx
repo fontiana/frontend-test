@@ -28,6 +28,7 @@ export default function SymbolTable({
           <TableHead className="w-[100px]">Prince Change</TableHead>
         </TableRow>
       </TableHeader>
+
       <TableBody>
         {realtimeSymbols.map((symbol) => (
           <TableRow
@@ -39,7 +40,13 @@ export default function SymbolTable({
             <TableCell>{symbol.bidPrice}</TableCell>
             <TableCell>{symbol.askPrice}</TableCell>
             <TableCell>
-              <span className="text-teal-500 bg-teal-800 rounded-[0.5rem] p-1">
+              <span
+                className={`rounded-[0.5rem] p-1 ${
+                  Number(symbol.priceChangePercent) < 0
+                    ? "text-red-500 bg-red-900"
+                    : "text-teal-500  bg-teal-800"
+                }`}
+              >
                 {symbol.priceChangePercent}%
               </span>
             </TableCell>

@@ -33,12 +33,12 @@ export default function SymbolSelection() {
   };
 
   return (
-    <div className="flex flex-col bg-gray-800 rounded p-2 gap-2 justify-between">
+    <div className="flex flex-col bg-gray-800 md:w-[215px] rounded p-2 gap-2 justify-between">
       <Input
         value={searchText}
         onChange={handleChangeSearch}
         placeholder="Search for Symbols"
-        className="w-[200px] rounded bg-gray-900 text-gray-400 border border-gray-500 "
+        className="md:w-[200px] rounded bg-gray-900 text-gray-400 border border-gray-500 "
       />
 
       <div className="flex flex-col overflow-auto h-[190px]">

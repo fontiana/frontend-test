@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { X, Plus } from "lucide-react";
 import { useState } from "react";
 
 import Modal from "react-modal";
@@ -41,7 +41,7 @@ export default function SymbolLists() {
   };
 
   return (
-    <div className="flex flex-col bg-gray-800 border border-gray-600 w-[600px] rounded p-2 ">
+    <div className="flex flex-col bg-gray-800 border border-gray-600 md:w-[600px] rounded  w-[340px] p-2 ">
       <div className="flex gap-2">
         <Select onValueChange={selectList} value={selectedList.name}>
           <SelectTrigger className="w-[550px] rounded bg-gray-900 text-gray-400 border border-gray-500 cursor-pointer">
@@ -64,7 +64,7 @@ export default function SymbolLists() {
           onClick={openModal}
           className="border border-teal-500 text-teal-500 w-[50px] rounded hover:bg-teal-800"
         >
-          +
+          <Plus size={16} />
         </Button>
       </div>
 

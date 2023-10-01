@@ -15,8 +15,14 @@
 
 body {
   background-color: #121214;
-  margin: 15rem;
+  margin: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media screen and (min-width: 600px) {
+  body {
+    margin: 15rem;
+  }
 }
