@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { Loading } from "../../components/Loading";
 import StickyHeadTable, { Column } from "../../components/Table/TableGrid";
 import * as S from "./Dashboard.styles";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface ITicker {
   stream: string;
@@ -32,16 +32,18 @@ export const Dashboard = () => {
     return jsonData;
   });
 
-  const ws = new WebSocket(
-    `wss:data-stream.binance.com/stream?streams=${symbol.toLowerCase()}@ticker`
-  );
+  useEffect(() => {
+    const ws = new WebSocket(
+      `wss:data-stream.binance.com/stream?streams=${symbol.toLowerCase()}@ticker`
+    );
 
-  ws.onmessage = (event) => {
-    console.log(event.data);
-    !!event.data && setBidData(event.data);
-  };
+    ws.onmessage = (event) => {
+      console.log(event.data);
+      !!event.data && setBidData(JSON.parse(event.data));
+    };
+  }, [symbol]);
 
-  console.log(bidData, "aqui");
+  console.log(bidData?.data, "aqui");
 
   const symbols = data?.symbols;
 
@@ -86,6 +88,8 @@ export const Dashboard = () => {
 
   const columns1 = [{ id: "symbol", label: "Symbol" }];
 
+  console.log(bidData?.data?.P, "Price");
+
   return (
     <S.Wrapper>
       <div style={{ marginRight: "20px" }}>
@@ -120,13 +124,13 @@ export const Dashboard = () => {
       <StickyHeadTable
         columns={columns}
         rows={
-          (bidData && [
+          (bidData?.data && [
             {
+              symbol: bidData.data.s,
               last_price: bidData.data.P,
               ask_price: bidData.data.a,
               bid_price: bidData.data.b,
               price_change: bidData.data.P,
-              symbol: bidData.data.s,
             },
           ]) ||
           []
