@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {
   Container,
   ListButton,
@@ -13,6 +13,7 @@ import {
   TableRow,
 } from '../../assets/styles/UserDashboard';
 import DashboardPriceBox from '../DashboardPriceBox';
+import {SymbolContext} from '../../contexts/SymbolContext';
 
 interface TableProps {
   symbol: string;
@@ -47,19 +48,22 @@ const data: TableProps[] = [
 ];
 
 export default function UserDashboard() {
+  const {createUserList, userLists} = useContext(SymbolContext);
+
+  const serializedUserList = userLists.map(list => ({
+    value: list.id,
+    label: list.name,
+  }));
+
   return (
     <Container>
       <ListContainer>
         <StyledSelect
-          defaultValue="list_a"
+          defaultValue="list_1"
           bordered={false}
-          options={[
-            {value: 'list_a', label: 'List A'},
-            {value: 'list_b', label: 'List B'},
-            {value: 'list_c', label: 'List C'},
-          ]}
+          options={serializedUserList}
         />
-        <ListButton>+</ListButton>
+        <ListButton onClick={createUserList}>+</ListButton>
       </ListContainer>
       <Table>
         <TableHead>
