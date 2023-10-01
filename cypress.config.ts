@@ -6,6 +6,7 @@ export default defineConfig({
     baseUrl: process.env.BASE_URL,
     env: {
       BASE_URL: process.env.BASE_URL,
+      URL_EXCHANGE_INFO: process.env.URL_EXCHANGE_INFO,
     },
   },
 });

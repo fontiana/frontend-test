@@ -148,7 +148,7 @@ export default function SymbolsList() {
             <li
               {...props}
               key={option.index}
-              id={`symbolNumber${option.index}`}
+              id={`symbolsListInput-option-${option.index}`}
             >
               {option.symbol}
             </li>

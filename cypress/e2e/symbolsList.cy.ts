@@ -9,44 +9,18 @@ describe("Validate symbols list", () => {
   });
   it("Is rendering", () => {
     cy.get("input")
-      .get("#symbolsGroupListInput")
+      .get("#symbolsListInput")
       .should("be.visible")
       .should("have.value", "");
   });
-  it("Is canceling a list creation", () => {
+  it("Can not add symbols without a list", () => {
     cy.get("input")
-      .get("#symbolsGroupListInput")
-      .type("My first symbols list{enter}");
-    cy.get("input").get("#cancelSymbolsList").click();
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .should("have.value", "")
-      .should("be.visible");
-  });
-  it("Is saving list with enter", () => {
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .type("My first symbols list{enter}");
-    cy.get("input").get("#saveSymbolsList").click();
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .should("have.value", "My first symbols list")
-      .should("be.visible");
-  });
-  it("Is saving list on selecting on a dropdown", () => {
-    cy.get("input").get("#symbolsGroupListInput").type("My first symbols list");
-    cy.get("li")
-      .get("#symbolsGroupListInput-option-0")
-      .should("contain.text", "My first symbols list")
+      .get("#symbolsListInput")
       .should("be.visible")
-      .click();
-    cy.get("input").get("#saveSymbolsList").click();
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .should("have.value", "My first symbols list")
-      .should("be.visible");
+      .should("have.value", "")
+      .should("be.disabled");
   });
-  it("Is unselecting a list", () => {
+  it("Is listing symbols", () => {
     cy.get("input")
       .get("#symbolsGroupListInput")
       .type("My first symbols list{enter}");
@@ -55,34 +29,102 @@ describe("Validate symbols list", () => {
       .get("#symbolsGroupListInput")
       .should("have.value", "My first symbols list")
       .should("be.visible");
-    cy.get("button")
-      .get(".MuiAutocomplete-clearIndicator")
-      .should("have.attr", "title", "Clear")
-      .should("be.visible")
-      .click();
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .should("have.value", "")
-      .should("be.visible")
-      .blur();
-  });
-  it("Is deleting a list", () => {
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .type("My first symbols list{enter}");
-    cy.get("input").get("#saveSymbolsList").click();
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .should("have.value", "My first symbols list")
-      .should("be.visible");
-    cy.get("#deleteSymbolsList").should("be.visible").click();
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .should("have.value", "")
-      .should("be.visible");
-    cy.get("input").get("#symbolsGroupListInput").focus();
 
-    cy.get("li").get("#symbolsGroupListInput-option-0").should("not.exist");
-    cy.get("input").get("#symbolsGroupListInput").blur();
+    cy.get("input")
+      .get("#symbolsListInput")
+      .should("be.visible")
+      .should("have.value", "")
+      .click();
+    cy.get("#symbolsListInput-option-0").should("be.visible");
+    cy.get("#symbolsListInput-option-1").should("be.visible");
+    cy.get("#symbolsListInput-option-2").should("be.visible");
+  });
+  it("Is adding symbol", () => {
+    cy.get("input")
+      .get("#symbolsGroupListInput")
+      .type("My first symbols list{enter}");
+    cy.get("input").get("#saveSymbolsList").click();
+    cy.get("input")
+      .get("#symbolsGroupListInput")
+      .should("have.value", "My first symbols list")
+      .should("be.visible");
+
+    cy.get("input")
+      .get("#symbolsListInput")
+      .should("have.value", "")
+      .should("be.visible")
+      .click();
+    cy.get("#symbolsListInput-option-0")
+      .click()
+      .then(($option) => {
+        cy.get("span")
+          .contains($option.text())
+          .should("have.class", "MuiChip-label")
+          .should("be.visible");
+      });
+  });
+  it("Is removing symbols", () => {
+    cy.get("input")
+      .get("#symbolsGroupListInput")
+      .type("My first symbols list{enter}");
+    cy.get("input").get("#saveSymbolsList").click();
+    cy.get("input")
+      .get("#symbolsGroupListInput")
+      .should("have.value", "My first symbols list")
+      .should("be.visible");
+
+    cy.get("input")
+      .get("#symbolsListInput")
+      .should("have.value", "")
+      .should("be.visible")
+      .click();
+    cy.get("#symbolsListInput-option-0")
+      .click()
+      .then(($option) => {
+        cy.get("span")
+          .contains($option.text())
+          .should("have.class", "MuiChip-label")
+          .should("be.visible")
+          .parent()
+          .children("svg")
+          .should("be.visible")
+          .click();
+
+        cy.get("span").contains($option.text()).should("not.exist");
+        return;
+      });
+  });
+  it("Is removing symbols with backspace", () => {
+    cy.get("input")
+      .get("#symbolsGroupListInput")
+      .type("My first symbols list{enter}");
+    cy.get("input").get("#saveSymbolsList").click();
+    cy.get("input")
+      .get("#symbolsGroupListInput")
+      .should("have.value", "My first symbols list")
+      .should("be.visible");
+
+    cy.get("input")
+      .get("#symbolsListInput")
+      .should("have.value", "")
+      .should("be.visible")
+      .click();
+    cy.get("#symbolsListInput-option-0")
+      .click()
+      .then(($option) => {
+        cy.get("span")
+          .contains($option.text())
+          .should("have.class", "MuiChip-label")
+          .should("be.visible");
+
+        cy.get("input")
+          .get("#symbolsListInput")
+          .should("have.value", "")
+          .should("be.visible")
+          .focus()
+          .type("{backspace}");
+
+        cy.get("span").contains($option.text()).should("not.exist");
+      });
   });
 });
