@@ -17,7 +17,7 @@ export default function SymbolList() {
   const [searchValue, setSearchValue] = useState('');
 
   const filteredSymbols = symbols.filter(data =>
-    data.symbol.toLowerCase().includes(searchValue.toLowerCase()),
+    data.name.toLowerCase().includes(searchValue.toLowerCase()),
   );
 
   return (
@@ -35,7 +35,7 @@ export default function SymbolList() {
       </SearchContainer>
       <ListContainer>
         {filteredSymbols.map(data => (
-          <SymbolElement key={data.symbol} symbol={data.symbol} />
+          <SymbolElement key={data.name} symbol={data.name} />
         ))}
       </ListContainer>
     </Container>

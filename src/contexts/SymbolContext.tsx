@@ -3,7 +3,8 @@ import React, {ReactNode, createContext, useEffect, useState} from 'react';
 import api from '../services/http/api';
 
 interface ISymbolDTO {
-  symbol: string;
+  name: string;
+  checked: boolean;
 }
 
 interface ProviderProps {
@@ -13,6 +14,7 @@ interface ProviderProps {
 interface ContextProps {
   symbols: ISymbolDTO[];
 }
+
 export const SymbolContext = createContext({} as ContextProps);
 
 export function SymbolContextProvider({children}: ProviderProps) {
@@ -21,7 +23,19 @@ export function SymbolContextProvider({children}: ProviderProps) {
   async function getSymbols() {
     try {
       const {data} = await api.get('exchangeInfo');
-      setSymbols(data.symbols);
+      const newSymbols: ISymbolDTO[] = [];
+      for (let index = 0; index < data.symbols.length; index++) {
+        let symbol = data.symbols[index];
+
+        symbol = {
+          name: symbol.symbol,
+          checked: false,
+        };
+
+        newSymbols.push(symbol);
+      }
+
+      setSymbols(newSymbols);
     } catch (error) {}
   }
 
