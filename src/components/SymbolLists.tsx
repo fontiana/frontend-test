@@ -97,7 +97,7 @@ export default function SymbolLists() {
               <Label>Name</Label>
               <Input
                 placeholder="example: List 1"
-                className="rounded bg-gray-900 text-gray-500"
+                className="rounded bg-gray-900 text-gray-400 border border-gray-500"
                 value={newListName}
                 onChange={(e) => setNewListName(e.target.value)}
               />
