@@ -1,5 +1,20 @@
+import { createGroupList } from "./groupsList.cy";
+import { symbolsListCheck } from "./symbolsList.cy";
+
+export const selectSymbol = (index: number) => {
+  cy.get(`#symbolsListInput-option-${index.toString()}`)
+    .click()
+    .then(($option) => {
+      cy.get("span")
+        .contains($option.text())
+        .should("have.class", "MuiChip-label")
+        .should("be.visible");
+    });
+};
+
 describe("Validate binance integration", () => {
   beforeEach(() => {
+    cy.visit("/");
     expect(true).to.equal(true);
   });
 
@@ -13,48 +28,15 @@ describe("Validate binance integration", () => {
         .to.not.be.oneOf([null, ""]);
     });
   });
-  it("Check symbols info request", () => {
-    cy.visit("/");
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .type("My second symbols list{enter}");
-    cy.get("input").get("#saveSymbolsList").click();
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .should("have.value", "My second symbols list")
-      .should("be.visible");
 
-    cy.get("input")
-      .get("#symbolsListInput")
-      .should("have.value", "")
-      .should("be.visible")
-      .click();
-    cy.get("#symbolsListInput-option-0")
-      .click()
-      .then(($option) => {
-        cy.get("span")
-          .contains($option.text())
-          .should("have.class", "MuiChip-label")
-          .should("be.visible");
-      });
-    cy.get("input")
-      .get("#symbolsListInput")
-      .should("have.value", "")
-      .should("be.visible")
-      .click();
-    cy.get("#symbolsListInput-option-1")
-      .click()
-      .then(($option) => {
-        cy.get("span")
-          .contains($option.text())
-          .should("have.class", "MuiChip-label")
-          .should("be.visible");
-      });
-    cy.get("input")
-      .get("#symbolsListInput")
-      .should("have.value", "")
-      .should("be.visible")
-      .blur();
+  it("Check symbols info websocket", () => {
+    createGroupList("My second symbols list");
+    symbolsListCheck();
+    selectSymbol(0);
+    symbolsListCheck();
+    selectSymbol(1);
+    symbolsListCheck();
+    cy.get("input").get("#symbolsListInput").blur();
 
     cy.get("table", { timeout: 5 * 1000 })
       .get("#symbolsValuesTable > tbody > tr")

@@ -1,3 +1,29 @@
+import { createGroupList } from "./groupsList.cy";
+
+export const selectSymbol = (index: number) => {
+  cy.get("input")
+    .get("#symbolsListInput")
+    .should("have.value", "")
+    .should("be.visible")
+    .click();
+  cy.get(`#symbolsListInput-option-${index.toString()}`)
+    .click()
+    .then(($option) => {
+      cy.get("span")
+        .contains($option.text())
+        .should("have.class", "MuiChip-label")
+        .should("be.visible");
+    });
+};
+
+export const symbolsListCheck = () => {
+  cy.get("input")
+    .get("#symbolsListInput")
+    .should("have.value", "")
+    .should("be.visible")
+    .click();
+};
+
 describe("Validate symbols list", () => {
   beforeEach(() => {
     cy.intercept({ resourceType: /xhr|fetch/ }, { log: true });
@@ -7,12 +33,12 @@ describe("Validate symbols list", () => {
     expect(true).to.equal(true);
     cy.visit("/");
   });
+
   it("Is rendering", () => {
-    cy.get("input")
-      .get("#symbolsListInput")
-      .should("be.visible")
-      .should("have.value", "");
+    createGroupList("My first symbols list");
+    symbolsListCheck();
   });
+
   it("Can not add symbols without a list", () => {
     cy.get("input")
       .get("#symbolsListInput")
@@ -20,64 +46,27 @@ describe("Validate symbols list", () => {
       .should("have.value", "")
       .should("be.disabled");
   });
-  it("Is listing symbols", () => {
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .type("My first symbols list{enter}");
-    cy.get("input").get("#saveSymbolsList").click();
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .should("have.value", "My first symbols list")
-      .should("be.visible");
 
-    cy.get("input")
-      .get("#symbolsListInput")
-      .should("be.visible")
-      .should("have.value", "")
-      .click();
+  it("Is listing symbols", () => {
+    createGroupList("My first symbols list");
+
+    symbolsListCheck();
+
     cy.get("#symbolsListInput-option-0").should("be.visible");
     cy.get("#symbolsListInput-option-1").should("be.visible");
     cy.get("#symbolsListInput-option-2").should("be.visible");
   });
+
   it("Is adding symbol", () => {
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .type("My first symbols list{enter}");
-    cy.get("input").get("#saveSymbolsList").click();
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .should("have.value", "My first symbols list")
-      .should("be.visible");
-
-    cy.get("input")
-      .get("#symbolsListInput")
-      .should("have.value", "")
-      .should("be.visible")
-      .click();
-    cy.get("#symbolsListInput-option-0")
-      .click()
-      .then(($option) => {
-        cy.get("span")
-          .contains($option.text())
-          .should("have.class", "MuiChip-label")
-          .should("be.visible");
-      });
+    createGroupList("My first symbols list");
+    selectSymbol(0);
   });
-  it("Is removing symbols", () => {
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .type("My first symbols list{enter}");
-    cy.get("input").get("#saveSymbolsList").click();
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .should("have.value", "My first symbols list")
-      .should("be.visible");
 
-    cy.get("input")
-      .get("#symbolsListInput")
-      .should("have.value", "")
-      .should("be.visible")
-      .click();
+  it("Is removing symbols", () => {
+    createGroupList("My first symbols list");
+
+    symbolsListCheck();
+
     cy.get("#symbolsListInput-option-0")
       .click()
       .then(($option) => {
@@ -94,21 +83,12 @@ describe("Validate symbols list", () => {
         return;
       });
   });
-  it("Is removing symbols with backspace", () => {
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .type("My first symbols list{enter}");
-    cy.get("input").get("#saveSymbolsList").click();
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .should("have.value", "My first symbols list")
-      .should("be.visible");
 
-    cy.get("input")
-      .get("#symbolsListInput")
-      .should("have.value", "")
-      .should("be.visible")
-      .click();
+  it("Is removing symbols with backspace", () => {
+    createGroupList("My first symbols list");
+
+    symbolsListCheck();
+
     cy.get("#symbolsListInput-option-0")
       .click()
       .then(($option) => {
