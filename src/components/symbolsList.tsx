@@ -109,10 +109,10 @@ export default function SymbolsList() {
 
   return (
     <>
-      <h1>Symbols:</h1>
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-center w-full">
         <Autocomplete
           multiple
+          className="grow"
           disabled={!selected}
           value={selected ? value : []}
           id="asynchronous-demo"

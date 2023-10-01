@@ -2,6 +2,8 @@
 import { RootState } from "@/app/store";
 import { PriceType, addPrices } from "@/reducers/priceListSlice";
 import { WebsocketEnum, WebsocketResponseType } from "@/types/websocket";
+import { ExpandLess, ExpandMore, HorizontalRule } from "@mui/icons-material";
+import { Chip } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -54,8 +56,36 @@ export default function PriceTable() {
   let selectedsSymbols = groups[(selected || 0) - 1]?.symbols.length || 0;
   let listedSymbols = pricesList.symbols.length || 0;
 
+  function PositiveValue({ value }: { value: number }) {
+    if (value == 0) {
+      return (
+        <Chip
+          color="default"
+          avatar={<HorizontalRule className="!text-gray" fontSize="small" />}
+          label={`${value} %`}
+        />
+      );
+    } else if (value > 0) {
+      return (
+        <Chip
+          color="success"
+          avatar={<ExpandLess className="!text-white" fontSize="small" />}
+          label={`${value} %`}
+        />
+      );
+    } else {
+      return (
+        <Chip
+          color="error"
+          avatar={<ExpandMore className="!text-white" fontSize="small" />}
+          label={`${value} %`}
+        />
+      );
+    }
+  }
+
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} className="my-4">
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -79,7 +109,9 @@ export default function PriceTable() {
                 <TableCell align="right">{price.lastPrice}</TableCell>
                 <TableCell align="right">{price.bestBidPrice}</TableCell>
                 <TableCell align="right">{price.bestAskPrice}</TableCell>
-                <TableCell align="right">{price.priceChangePercent}</TableCell>
+                <TableCell align="right">
+                  <PositiveValue value={+price.priceChangePercent} />
+                </TableCell>
               </TableRow>
             ))}
           {selectedsSymbols != 0 && listedSymbols != selectedsSymbols && (

@@ -11,12 +11,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Tooltip,
 } from "@mui/material";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Icon from "./icons";
 
 interface GroupOptionType {
   inputValue?: string;
@@ -81,11 +81,11 @@ export default function GroupList() {
 
   return (
     <>
-      <h1>Groups:</h1>
-      <div className="flex flex-row items-center ">
+      <div className="flex flex-row items-center gap-2">
         <Autocomplete
           size="small"
           value={selectedGroup}
+          className="grow lg:grow-0"
           onChange={(event, newValue) => {
             if (typeof newValue === "string") {
               // timeout to avoid instant validation of the dialog's form.
@@ -146,11 +146,16 @@ export default function GroupList() {
           )}
           sx={{ width: 300 }}
           freeSolo
-          renderInput={(params) => (
-            <TextField {...params} label="Select a saved symbols list" />
-          )}
+          renderInput={(params) => <TextField {...params} label="Lists" />}
         />
-        <Icon icon={<Delete />} onClick={removeGroupList} />
+        <Tooltip title="Delete selected list">
+          <div
+            onClick={removeGroupList}
+            className="w-10 h-10 rounded cursor-pointer bg-red-400 text-white p-1 flex justify-center items-center"
+          >
+            <Delete />
+          </div>
+        </Tooltip>
       </div>
 
       <Dialog open={open} onClose={handleClose}>
@@ -161,6 +166,7 @@ export default function GroupList() {
               Do you want to add another symbol list?
             </DialogContentText>
             <TextField
+              className="w-full"
               autoFocus
               margin="dense"
               id="symbolListName"
