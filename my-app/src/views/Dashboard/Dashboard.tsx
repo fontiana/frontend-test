@@ -20,6 +20,7 @@ export const Dashboard = () => {
   const [symbolsState, setSymbolsState] = useState([]);
   const [symbol, setSymbol] = useState("");
   const [bidData, setBidData] = useState<ITicker>();
+  const [loading, setLoading] = useState(false);
 
   const { data, error, isLoading } = useQuery("exchangeInfo", async () => {
     const response = await fetch(
@@ -40,6 +41,7 @@ export const Dashboard = () => {
     ws.onmessage = (event) => {
       console.log(event.data);
       !!event.data && setBidData(JSON.parse(event.data));
+      setLoading(false);
     };
   }, [symbol]);
 
@@ -48,6 +50,7 @@ export const Dashboard = () => {
   const symbols = data?.symbols;
 
   const handleSymbolRowClick = (symbolName: string) => {
+    setLoading(true);
     const selectedSymbolObject = symbols?.filter(
       (item: { symbol: string }) => item.symbol === symbolName
     );
@@ -122,22 +125,26 @@ export const Dashboard = () => {
       </div>
       <S.Section>
         <S.SubTitle> INFORMATIONS </S.SubTitle>
-        <StickyHeadTable
-          columns={columns}
-          tableWidth="100%"
-          rows={
-            (bidData?.data && [
-              {
-                symbol: bidData.data.s,
-                last_price: bidData.data.P,
-                ask_price: bidData.data.a,
-                bid_price: bidData.data.b,
-                price_change: bidData.data.P,
-              },
-            ]) ||
-            []
-          }
-        />
+        {loading ? (
+          <Loading />
+        ) : (
+          <StickyHeadTable
+            columns={columns}
+            tableWidth="100%"
+            rows={
+              (bidData?.data && [
+                {
+                  symbol: bidData.data.s,
+                  last_price: bidData.data.P,
+                  ask_price: bidData.data.a,
+                  bid_price: bidData.data.b,
+                  price_change: bidData.data.P,
+                },
+              ]) ||
+              []
+            }
+          />
+        )}
       </S.Section>
     </S.Wrapper>
   );
