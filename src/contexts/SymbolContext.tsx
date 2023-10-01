@@ -13,6 +13,7 @@ interface ProviderProps {
 
 interface ContextProps {
   symbols: ISymbolDTO[];
+  handleSymbolCheck: (name: string) => void;
 }
 
 export const SymbolContext = createContext({} as ContextProps);
@@ -23,7 +24,7 @@ export function SymbolContextProvider({children}: ProviderProps) {
   async function getSymbols() {
     try {
       const {data} = await api.get('exchangeInfo');
-      const newSymbols: ISymbolDTO[] = [];
+      const serializedSymbols: ISymbolDTO[] = [];
       for (let index = 0; index < data.symbols.length; index++) {
         let symbol = data.symbols[index];
 
@@ -32,11 +33,24 @@ export function SymbolContextProvider({children}: ProviderProps) {
           checked: false,
         };
 
-        newSymbols.push(symbol);
+        serializedSymbols.push(symbol);
       }
 
-      setSymbols(newSymbols);
+      setSymbols(serializedSymbols);
     } catch (error) {}
+  }
+
+  function handleSymbolCheck(name: string) {
+    const serializedSymbols = symbols.map(symbol =>
+      symbol.name === name
+        ? {
+            ...symbol,
+            checked: !symbol.checked,
+          }
+        : symbol,
+    );
+
+    setSymbols(serializedSymbols);
   }
 
   useEffect(() => {
@@ -44,7 +58,7 @@ export function SymbolContextProvider({children}: ProviderProps) {
   }, []);
 
   return (
-    <SymbolContext.Provider value={{symbols}}>
+    <SymbolContext.Provider value={{symbols, handleSymbolCheck}}>
       {children}
     </SymbolContext.Provider>
   );
