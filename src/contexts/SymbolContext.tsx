@@ -2,9 +2,15 @@
 import React, {ReactNode, createContext, useEffect, useState} from 'react';
 import api from '../services/http/api';
 
-interface ISymbolDTO {
+interface Symbol {
   name: string;
   checked: boolean;
+}
+
+interface List {
+  id: string;
+  name: string;
+  symbols: Symbol[];
 }
 
 interface ProviderProps {
@@ -12,19 +18,28 @@ interface ProviderProps {
 }
 
 interface ContextProps {
-  symbols: ISymbolDTO[];
+  symbols: Symbol[];
+  userLists: List[];
   handleSymbolCheck: (name: string) => void;
+  createUserList: () => void;
 }
 
 export const SymbolContext = createContext({} as ContextProps);
 
 export function SymbolContextProvider({children}: ProviderProps) {
-  const [symbols, setSymbols] = useState<ISymbolDTO[]>([]);
+  const [symbols, setSymbols] = useState<Symbol[]>([]);
+  const [userLists, setUserLists] = useState<List[]>([
+    {
+      id: 'list_1',
+      name: 'List 1',
+      symbols: [],
+    },
+  ]);
 
   async function getSymbols() {
     try {
       const {data} = await api.get('exchangeInfo');
-      const serializedSymbols: ISymbolDTO[] = [];
+      const serializedSymbols: Symbol[] = [];
       for (let index = 0; index < data.symbols.length; index++) {
         let symbol = data.symbols[index];
 
@@ -53,12 +68,26 @@ export function SymbolContextProvider({children}: ProviderProps) {
     setSymbols(serializedSymbols);
   }
 
+  function createUserList() {
+    setUserLists([
+      ...userLists,
+      {
+        id: `list_${userLists.length + 1}`,
+        name: `List ${userLists.length + 1}`,
+        symbols: [],
+      },
+    ]);
+
+    console.log(userLists);
+  }
+
   useEffect(() => {
     getSymbols();
   }, []);
 
   return (
-    <SymbolContext.Provider value={{symbols, handleSymbolCheck}}>
+    <SymbolContext.Provider
+      value={{symbols, userLists, handleSymbolCheck, createUserList}}>
       {children}
     </SymbolContext.Provider>
   );
