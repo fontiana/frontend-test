@@ -72,7 +72,7 @@ yarn install
 
 yarn dev
 ```
-Basta copiar o URL disponibilizado no console e colar no seu navegador e pronto!
+Basta copiar o URL (normalmente [http://localhost:3000/](http://localhost:3000/)) disponibilizado no console e colar no seu navegador e pronto!
 ## Para executar os testes execute o comando:
 
 ```bash
@@ -89,5 +89,8 @@ yarn cypress open
 > - **groupsList:** Teste do componente de criação de listas
 > 
 > - **symbolsList:** Teste do componente de seleção de symbolos
+> 
+> Obs.: Para rodar os teste é necessário que o projeto esteja rodando
+> Obs.: Recomendo não navegar no computador enquanto estiver rodando para melhor precisão dos testes
 
 E pronto! Os testes serão executados e você poderá ver o resultado
