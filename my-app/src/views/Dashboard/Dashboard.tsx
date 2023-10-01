@@ -120,22 +120,25 @@ export const Dashboard = () => {
           onClickRow={(rowId) => handleSymbolRowClick(rowId)}
         />
       </div>
-
-      <StickyHeadTable
-        columns={columns}
-        rows={
-          (bidData?.data && [
-            {
-              symbol: bidData.data.s,
-              last_price: bidData.data.P,
-              ask_price: bidData.data.a,
-              bid_price: bidData.data.b,
-              price_change: bidData.data.P,
-            },
-          ]) ||
-          []
-        }
-      />
+      <S.Section>
+        <S.SubTitle> INFORMATIONS </S.SubTitle>
+        <StickyHeadTable
+          columns={columns}
+          tableWidth="100%"
+          rows={
+            (bidData?.data && [
+              {
+                symbol: bidData.data.s,
+                last_price: bidData.data.P,
+                ask_price: bidData.data.a,
+                bid_price: bidData.data.b,
+                price_change: bidData.data.P,
+              },
+            ]) ||
+            []
+          }
+        />
+      </S.Section>
     </S.Wrapper>
   );
 };

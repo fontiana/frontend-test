@@ -1,10 +1,8 @@
 import * as S from "./MainHeader.styles";
-import { Switch } from "../Switch";
 
 export const MainHeader = () => {
   return (
     <S.Wrapper>
-      <Switch />
       <S.Profile>
         <S.HelloContent>
           <S.IntroducingMessage>
@@ -12,7 +10,7 @@ export const MainHeader = () => {
           </S.IntroducingMessage>
         </S.HelloContent>
       </S.Profile>
-      <div></div>
+      <div />
     </S.Wrapper>
   );
 };

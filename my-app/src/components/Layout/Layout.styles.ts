@@ -20,4 +20,7 @@ export const Grid = styled.div`
   ::-webkit-scrollbar {
     width: 10px;
   }
+  @media screen and (max-width: 500px) {
+    grid-template-columns: 0px auto;
+  }
 `;

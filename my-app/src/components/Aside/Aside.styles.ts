@@ -41,12 +41,20 @@ export const SidenavHeader = styled.header`
   display: flex;
   align-items: center;
   height: 70px;
+
+  @media screen and (max-width: 500px) {
+    display: none;
+  }
 `;
 
 export const MenuContainer = styled.nav`
   display: flex;
   flex-direction: column;
   padding-top: 20px;
+
+  @media screen and (max-width: 500px) {
+    display: none;
+  }
 `;
 
 export const MenuItemLink = styled.a`
