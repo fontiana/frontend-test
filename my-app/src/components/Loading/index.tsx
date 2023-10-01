@@ -1,45 +1,64 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 
-// Crie uma animação de rotação
-const rotate = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`;
-
-// Estilize o componente de Loading usando Styled Components
-const LoadingWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-
-  // Animação de rotação
-  svg {
-    animation: ${rotate} 2s linear infinite;
-  }
-`;
-
-const Loading = () => {
+export const Loading = () => {
   return (
-    <LoadingWrapper>
-      <svg
-        width="40"
-        height="40"
-        viewBox="0 0 40 40"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-        focusable="false"
-        stroke="#fffff"
-      >
-        <circle cx="20" cy="20" r="18" fill="none" strokeWidth="4" />
-        <circle cx="20" cy="20" r="18" fill="none" strokeWidth="4" />
-      </svg>
-    </LoadingWrapper>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <CircularProgress />
+    </div>
   );
 };
 
-export default Loading;
+const CircularProgress = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 10px solid ${({ theme }) => theme.color.white};
+  border-radius: 50%;
+  position: relative;
+  animation: loading 1s infinite linear;
+
+  &::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.color.white};
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: loading-inner 1s infinite linear;
+  }
+
+  @keyframes loading {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes loading-inner {
+    0% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    100% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+  }
+`;

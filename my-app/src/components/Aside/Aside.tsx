@@ -13,7 +13,7 @@ export const Aside = () => {
   return (
     <S.Wrapper>
       <S.SidenavHeader>
-        <S.MyWallet>Minha Carteira</S.MyWallet>
+        <S.MyWallet>MY BIDS</S.MyWallet>
       </S.SidenavHeader>
 
       <S.MenuContainer>

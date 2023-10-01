@@ -7,10 +7,12 @@ export const MainHeader = () => {
       <Switch />
       <S.Profile>
         <S.HelloContent>
-          <S.IntroducingMessage> Olá </S.IntroducingMessage>
+          <S.IntroducingMessage>
+            Welcome to binace application to verify your bids
+          </S.IntroducingMessage>
         </S.HelloContent>
-        <S.UserName> Victor Moraes </S.UserName>
       </S.Profile>
+      <div></div>
     </S.Wrapper>
   );
 };

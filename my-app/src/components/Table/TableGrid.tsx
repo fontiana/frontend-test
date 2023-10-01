@@ -44,10 +44,10 @@ export type Column = {
 
 export interface Data {
   symbol: string;
-  last_price: number;
-  bid_price: number;
-  ask_price: number;
-  price_change: number;
+  last_price: string;
+  bid_price: string;
+  ask_price: string;
+  price_change: string;
 }
 
 type Props = {

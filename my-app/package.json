@@ -23,11 +23,14 @@
     "react-query": "^3.39.3",
     "react-router-dom": "^6.16.0",
     "react-switch": "^7.0.0",
-    "styled-components": "^6.0.8"
+    "socket.io-client": "^4.7.2",
+    "styled-components": "^6.0.8",
+    "websocket": "^1.0.34"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@types/websocket": "^1.0.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react-swc": "^3.3.2",

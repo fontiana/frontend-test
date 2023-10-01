@@ -65,6 +65,8 @@ export const MenuItemLink = styled.a`
   }
 `;
 
-export const MyWallet = styled.span``;
+export const MyWallet = styled.span`
+  font-size: 700;
+`;
 
 export const IconAndItemWrapper = styled.div;

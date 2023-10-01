@@ -1,23 +1,26 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useQuery } from "react-query";
-import Loading from "../../components/Loading";
-import StickyHeadTable, {
-  Column,
-  Data,
-} from "../../components/Table/TableGrid";
+import { Loading } from "../../components/Loading";
+import StickyHeadTable, { Column } from "../../components/Table/TableGrid";
 import * as S from "./Dashboard.styles";
 import { useMemo, useState } from "react";
 
-export interface Price {
-  s: string;
-  c: number;
-  p: number;
-  b: number;
-  a: number;
+interface ITicker {
+  stream: string;
+  data: {
+    c: string;
+    b: string;
+    a: string;
+    P: string;
+    s: string;
+  };
 }
 
 export const Dashboard = () => {
   const [symbolsState, setSymbolsState] = useState([]);
-  // const [price, setPrice] = useState<Price>();
+  const [symbol, setSymbol] = useState("");
+  const [bidData, setBidData] = useState<ITicker>();
+
   const { data, error, isLoading } = useQuery("exchangeInfo", async () => {
     const response = await fetch(
       "https://data.binance.com/api/v3/exchangeInfo"
@@ -29,13 +32,24 @@ export const Dashboard = () => {
     return jsonData;
   });
 
+  const ws = new WebSocket(
+    `wss:data-stream.binance.com/stream?streams=${symbol.toLowerCase()}@ticker`
+  );
+
+  ws.onmessage = (event) => {
+    console.log(event.data);
+    !!event.data && setBidData(event.data);
+  };
+
+  console.log(bidData, "aqui");
+
   const symbols = data?.symbols;
 
   const handleSymbolRowClick = (symbolName: string) => {
     const selectedSymbolObject = symbols?.filter(
       (item: { symbol: string }) => item.symbol === symbolName
     );
-    console.log(selectedSymbolObject, "mostre-me o símbolo");
+    setSymbol(selectedSymbolObject[0].symbol);
   };
 
   useMemo(() => {
@@ -49,6 +63,8 @@ export const Dashboard = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          fontSize: "50px",
+          height: "100%",
         }}
       >
         <Loading />
@@ -60,11 +76,6 @@ export const Dashboard = () => {
     return `Ocorreu um erro ao buscar os dados da exchange: ${error}.`;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  console.log(data);
-
   const columns: Column[] = [
     { id: "symbol", label: "Symbol" },
     { id: "bid_price", label: "Bid Price" },
@@ -75,24 +86,6 @@ export const Dashboard = () => {
 
   const columns1 = [{ id: "symbol", label: "Symbol" }];
 
-  function createData(
-    ask_price: number,
-    bid_price: number,
-    last_price: number,
-    price_change: number,
-    symbol: string
-  ): Data {
-    return { ask_price, bid_price, last_price, price_change, symbol };
-  }
-
-  const rows = [
-    createData(0.000023, 0.000025, 0.000029, 250, "ETHKPI"),
-    createData(0.000024, 0.000026, 0.00003, 260, "BTCROI"),
-    createData(0.000025, 0.000027, 0.000031, 270, "LTCMKT"),
-    createData(0.000026, 0.000028, 0.000032, 280, "XRPTRA"),
-  ];
-
-  console.log(symbolsState, "esse mano tá aqui");
   return (
     <S.Wrapper>
       <div style={{ marginRight: "20px" }}>
@@ -124,7 +117,21 @@ export const Dashboard = () => {
         />
       </div>
 
-      <StickyHeadTable columns={columns} rows={rows} />
+      <StickyHeadTable
+        columns={columns}
+        rows={
+          (bidData && [
+            {
+              last_price: bidData.data.P,
+              ask_price: bidData.data.a,
+              bid_price: bidData.data.b,
+              price_change: bidData.data.P,
+              symbol: bidData.data.s,
+            },
+          ]) ||
+          []
+        }
+      />
     </S.Wrapper>
   );
 };
