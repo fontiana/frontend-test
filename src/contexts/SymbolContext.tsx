@@ -77,8 +77,6 @@ export function SymbolContextProvider({children}: ProviderProps) {
         symbols: [],
       },
     ]);
-
-    console.log(userLists);
   }
 
   useEffect(() => {
