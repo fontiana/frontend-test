@@ -1,74 +1,79 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 
-export type Symbol = {
+export type SymbolList = {
   name: string;
-  checked: boolean;
+  symbols: string[];
 };
 
-interface SymbolContextProps {
-  symbols: Array<Symbol>;
-  selectedSymbols: Array<Symbol>;
-  handleSelectSymbol: (symbol: Symbol) => void;
+interface SymbolContextValue {
+  symbolLists: Array<SymbolList>;
+  selectedList: SymbolList;
+  createSymbolList: (name: string) => void;
+  addSymbolsToList: (symbols: string[]) => void;
+  selectList: (name: string) => void;
 }
 
-const SymbolContext = createContext({} as SymbolContextProps);
+const SymbolContext = createContext({} as SymbolContextValue);
+
+const defaultLists: Array<SymbolList> = [
+  {
+    name: "List 1",
+    symbols: [],
+  },
+];
 
 export function SymbolContextProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [symbols, setSymbols] = useState<Symbol[]>([]);
+  const [symbolLists, setSymbolLists] = useState<SymbolList[]>(defaultLists);
+  const [selectedListIndex, setSelectedListIndex] = useState(0);
 
-  const { data, isLoading } = useQuery(
-    "symbolData",
-    async () => {
-      const response = await fetch(
-        "https://data.binance.com/api/v3/exchangeInfo"
-      );
-      return response.json() as Promise<{ symbols: Array<{ symbol: string }> }>;
-    },
-    {
-      refetchOnWindowFocus: false,
-      select: (binanceSymbols) => {
-        return binanceSymbols.symbols.map((symbol) => {
-          const obj: Symbol = {
-            name: symbol.symbol,
-            checked: false,
+  const selectedList = symbolLists[selectedListIndex];
+
+  const createSymbolList = (name: string) => {
+    if (symbolLists.find((sl) => sl.name === name)) return;
+
+    const newList: SymbolList = {
+      name,
+      symbols: [],
+    };
+
+    setSymbolLists((prevLists) => [...prevLists, newList]);
+    setSelectedListIndex(symbolLists.length);
+  };
+
+  const addSymbolsToList = (symbols: string[]) => {
+    setSymbolLists((prevLists) => {
+      return prevLists.map((list) => {
+        if (list.name === selectedList.name) {
+          return {
+            ...selectedList,
+            symbols,
           };
-
-          return obj;
-        });
-      },
-      onSuccess: (data) => {
-        console.log({ data });
-        setSymbols(data);
-      },
-    }
-  );
-
-  const handleSelectSymbol = (symbol: Symbol) => {
-    setSymbols((prevSymbolList) => {
-      return prevSymbolList.map((item) => {
-        if (item.name === symbol.name) {
-          return { ...symbol, checked: !symbol.checked };
         }
-        return item;
+        return list;
       });
     });
   };
 
-  const selectedSymbols = useMemo(() => {
-    return symbols.filter((symbol) => symbol.checked);
-  }, [symbols]);
+  const selectList = (name: string) => {
+    const index = symbolLists.findIndex((list) => list.name === name);
+    if (index > -1) {
+      setSelectedListIndex(index);
+    }
+  };
 
   return (
     <SymbolContext.Provider
       value={{
-        symbols,
-        selectedSymbols,
-        handleSelectSymbol,
+        symbolLists,
+        selectedList,
+        createSymbolList,
+        addSymbolsToList,
+        selectList,
       }}
     >
       {children}
@@ -76,4 +81,4 @@ export function SymbolContextProvider({
   );
 }
 
-export const useSymbols = () => useContext(SymbolContext);
+export const useSymbolsContext = () => useContext(SymbolContext);
