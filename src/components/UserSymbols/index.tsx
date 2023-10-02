@@ -46,9 +46,6 @@ export function UserSymbols() {
     const urlWithSymbols = `${url}?streams=${symbolsParsed}`
 
     const socket = new WebSocket(urlWithSymbols)
-    socket.onopen = (event) => {
-      console.log('Monitoring symbols list (websocket connection): ', event)
-    }
     socket.onerror = (event) => {
       console.log(
         'An error occurred while opening websocket connection: ',
@@ -64,7 +61,6 @@ export function UserSymbols() {
         askPrice: parseFloat(Number(data?.a ?? 0).toFixed(6)),
         priceChange: parseFloat(Number(data?.P ?? 0).toFixed(2)),
       }
-      console.log({ data, formattedData })
       handleUpdateSymbolsInfo(data?.s, formattedData)
     }
 
@@ -146,7 +142,8 @@ export function UserSymbols() {
           <Tbody>
             {lists
               ?.find((li) => li.name === selectedListName)
-              ?.symbolsInfo?.map((symbol) => (
+              ?.symbolsInfo?.sort((a, b) => a.symbol.localeCompare(b.symbol))
+              ?.map((symbol) => (
                 <Tr key={symbol.symbol}>
                   <Td>{symbol.symbol}</Td>
                   <Td>{symbol.lastPrice}</Td>
@@ -157,14 +154,21 @@ export function UserSymbols() {
                       align="center"
                       justify="center"
                       borderWidth="1px"
-                      borderColor="green.300"
-                      bg="green.100"
+                      borderColor={
+                        symbol.priceChange >= 0 ? 'green.300' : 'red.300'
+                      }
+                      bg={symbol.priceChange >= 0 ? 'green.100' : 'red.100'}
                       borderRadius="999px"
                       p="4px"
                       maxW="80px"
                       minW="40px"
                     >
-                      <Text color="green.700" fontWeight="500">
+                      <Text
+                        color={
+                          symbol.priceChange >= 0 ? 'green.700' : 'red.700'
+                        }
+                        fontWeight="500"
+                      >
                         {symbol.priceChange}%
                       </Text>
                     </Flex>
