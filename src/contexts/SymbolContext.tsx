@@ -8,7 +8,7 @@ interface Symbol {
 }
 
 interface List {
-  id: string;
+  id: number;
   name: string;
   symbols: Symbol[];
 }
@@ -22,6 +22,8 @@ interface ContextProps {
   userLists: List[];
   handleSymbolCheck: (name: string) => void;
   createUserList: () => void;
+  changeCurrentUserListIndex: (index: number) => void;
+  addCheckedSymbolsToList: () => void;
 }
 
 export const SymbolContext = createContext({} as ContextProps);
@@ -30,11 +32,12 @@ export function SymbolContextProvider({children}: ProviderProps) {
   const [symbols, setSymbols] = useState<Symbol[]>([]);
   const [userLists, setUserLists] = useState<List[]>([
     {
-      id: 'list_1',
+      id: 1,
       name: 'List 1',
       symbols: [],
     },
   ]);
+  const [currentUserListIndex, setCurrentUserListIndex] = useState<number>(0);
 
   async function getSymbols() {
     try {
@@ -72,11 +75,26 @@ export function SymbolContextProvider({children}: ProviderProps) {
     setUserLists([
       ...userLists,
       {
-        id: `list_${userLists.length + 1}`,
+        id: userLists.length + 1,
         name: `List ${userLists.length + 1}`,
         symbols: [],
       },
     ]);
+  }
+
+  function addCheckedSymbolsToList() {
+    const checkedSymbols = symbols.filter(symbol => symbol.checked == true);
+    if (checkedSymbols.length > 0) {
+      checkedSymbols.map(symbol =>
+        userLists[currentUserListIndex].symbols.push(symbol),
+      );
+    }
+
+    getSymbols();
+  }
+
+  function changeCurrentUserListIndex(index: number) {
+    setCurrentUserListIndex(index);
   }
 
   useEffect(() => {
@@ -85,7 +103,14 @@ export function SymbolContextProvider({children}: ProviderProps) {
 
   return (
     <SymbolContext.Provider
-      value={{symbols, userLists, handleSymbolCheck, createUserList}}>
+      value={{
+        symbols,
+        userLists,
+        handleSymbolCheck,
+        createUserList,
+        changeCurrentUserListIndex,
+        addCheckedSymbolsToList,
+      }}>
       {children}
     </SymbolContext.Provider>
   );
