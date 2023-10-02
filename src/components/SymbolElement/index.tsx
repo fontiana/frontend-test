@@ -5,9 +5,10 @@ import {SymbolContext} from '../../contexts/SymbolContext';
 
 interface SymbolElementProps {
   symbol: string;
+  checked: boolean;
 }
 
-export default function SymbolElement({symbol}: SymbolElementProps) {
+export default function SymbolElement({symbol, checked}: SymbolElementProps) {
   const {handleSymbolCheck} = useContext(SymbolContext);
 
   const handleCheckboxChange = () => {
@@ -16,7 +17,7 @@ export default function SymbolElement({symbol}: SymbolElementProps) {
 
   return (
     <Container>
-      <Checkbox onChange={handleCheckboxChange}>
+      <Checkbox onChange={handleCheckboxChange} checked={checked}>
         <SymbolText>{symbol}</SymbolText>
       </Checkbox>
     </Container>
