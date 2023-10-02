@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 import dark from "./Styles/themes/dark";
 import { Routes } from "./routes";
+import { Provider } from "./services/context";
 // import light from './Styles/themes/light'
 
 const queryClient = new QueryClient();
@@ -11,10 +12,12 @@ const queryClient = new QueryClient();
 export const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={dark}>
-        <Routes />
-        <GlobalStyles />
-      </ThemeProvider>
+      <Provider>
+        <ThemeProvider theme={dark}>
+          <Routes />
+          <GlobalStyles />
+        </ThemeProvider>
+      </Provider>
     </QueryClientProvider>
   );
 };

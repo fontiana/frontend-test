@@ -3,24 +3,15 @@ import { useQuery } from "react-query";
 import { Loading } from "../../components/Loading";
 import StickyHeadTable, { Column } from "../../components/Table/TableGrid";
 import * as S from "./Dashboard.styles";
-import { useEffect, useMemo, useState } from "react";
-
-interface ITicker {
-  stream: string;
-  data: {
-    c: string;
-    b: string;
-    a: string;
-    P: string;
-    s: string;
-  };
-}
+import { useContext, useEffect, useMemo, useState } from "react";
+import { BidContext } from "../../services/context";
 
 export const Dashboard = () => {
   const [symbolsState, setSymbolsState] = useState([]);
   const [symbol, setSymbol] = useState<string[]>([]);
-  const [bidData, setBidData] = useState<ITicker[]>();
   const [loading, setLoading] = useState(false);
+
+  const { setBidData, bidData } = useContext(BidContext);
 
   const { data, error, isLoading } = useQuery("exchangeInfo", async () => {
     const response = await fetch(
@@ -28,6 +19,13 @@ export const Dashboard = () => {
     );
     if (!response.ok) {
       throw new Error("Não foi possível obter os dados da exchange.");
+    }
+
+    //Lidar com erro 302 presente no momento
+    if (response.status === 302) {
+      const response = await fetch("https://www.binance.com/en");
+      const jsonData = await response.json();
+      return jsonData;
     }
     const jsonData = await response.json();
     return jsonData;
@@ -61,6 +59,7 @@ export const Dashboard = () => {
       }
       setLoading(false);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [symbol]);
 
   const symbols = data?.symbols;
