@@ -9,7 +9,6 @@ export const Container = styled.div`
   padding: 1em;
   box-shadow: 0 0 0.2em #ccc;
   border-radius: 0.5em;
-  margin-top: 0.5em;
   gap: 1em;
 `;
 
@@ -44,6 +43,6 @@ export const ListButton = styled.button`
   }
 
   @media (max-width: 768px) {
-    width: 10%;
+    width: 20%;
   }
 `;
