@@ -10,10 +10,13 @@ interface IExchangeInfoContext {
   fetchMoreSymbols: () => void
 
   lists: List[]
-  selectedList: List
+  selectedList: string
   createNewList: (name: string) => void
-  handleSelectList: (name: string) => void
-  handleAddSymbolsToCurrentList: (symbols: ExchangeSymbol['symbol'][]) => void
+  handleAddSymbolsToCurrentList: (
+    currentListName: string,
+    symbols: ExchangeSymbol['symbol'][],
+  ) => void
+  handleSelectList: (listName: string) => void
 }
 const ExchangeInfoContext = createContext({} as IExchangeInfoContext)
 const PAGE_LIMIT = 20
@@ -31,12 +34,11 @@ export const ExchangeInfoProvider = ({
   const [lists, setLists] = useState<List[]>([
     { name: 'Lista A', symbolsInfo: [] },
   ])
-  const [selectedList, setSelectedList] = useState<List>(lists[0])
+  const [selectedList, setSelectedList] = useState('Lista A')
 
   useEffect(() => {
     const listAllSymbols = makeListAllExchangeSymbols()
     listAllSymbols.execute().then((symbols) => {
-      console.log({ symbols })
       setCompletedSymbolsList(symbols)
     })
   }, [])
@@ -60,15 +62,15 @@ export const ExchangeInfoProvider = ({
     setLists((prevLists) => [...prevLists, newList])
   }
 
-  const handleSelectList = (name: string) => {
-    const findedList = lists.find((list) => list.name === name)
-    if (!findedList) return
-    setSelectedList(findedList)
-  }
-
   const handleAddSymbolsToCurrentList = (
+    currentListName: string,
     symbols: ExchangeSymbol['symbol'][],
   ) => {
+    const currentList = lists.find(
+      (li) => li.name.toLowerCase() === currentListName.toLowerCase(),
+    )
+    if (!currentList) return
+
     const newSymbols: List['symbolsInfo'] = symbols.map((symbol) => ({
       symbol,
       askPrice: 0,
@@ -76,15 +78,26 @@ export const ExchangeInfoProvider = ({
       lastPrice: 0,
       priceChange: 0,
     }))
-    setSelectedList((prev) => {
-      const newSymbolsInfo = [...prev.symbolsInfo, ...newSymbols]
-      const filteredSymbols = _.uniqBy(newSymbolsInfo, 'symbol')
-      return {
-        ...prev,
-        symbolsInfo: filteredSymbols,
-      }
+    const uniqSymbols = _.uniqBy(
+      [...currentList.symbolsInfo, ...newSymbols],
+      'symbol',
+    )
+    setLists((prevLists) => {
+      const listsWithoutOldList = prevLists.filter(
+        (li) => li.name.toLowerCase() !== currentListName.toLowerCase(),
+      )
+      return [
+        ...listsWithoutOldList,
+        { ...currentList, symbolsInfo: uniqSymbols },
+      ]
     })
   }
+
+  const handleSelectList = (listName: string) => {
+    setSelectedList(listName)
+  }
+
+  console.log({ lists, selectedList })
 
   return (
     <ExchangeInfoContext.Provider
@@ -94,9 +107,9 @@ export const ExchangeInfoProvider = ({
         fetchMoreSymbols,
         lists,
         createNewList,
+        handleAddSymbolsToCurrentList,
         selectedList,
         handleSelectList,
-        handleAddSymbolsToCurrentList,
       }}
     >
       {children}

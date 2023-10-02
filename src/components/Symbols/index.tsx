@@ -16,9 +16,15 @@ import { SymbolCheckBox } from '../SymbolCheckBox'
 
 export function Symbols() {
   const [selectedSymbols, setSelectedSymbols] = useState<string[]>([])
-  const { symbolsList, handleAddSymbolsToCurrentList } = useExchangeInfo()
+  const { symbolsList, handleAddSymbolsToCurrentList, selectedList } =
+    useExchangeInfo()
 
   console.log({ selectedSymbols })
+
+  const handleAddSymbols = () => {
+    handleAddSymbolsToCurrentList(selectedList, selectedSymbols)
+    setSelectedSymbols([])
+  }
 
   return (
     <Flex
@@ -90,7 +96,7 @@ export function Symbols() {
           w="100%"
           colorScheme="blue"
           isDisabled={selectedSymbols.length <= 0}
-          onClick={() => handleAddSymbolsToCurrentList(selectedSymbols)}
+          onClick={() => handleAddSymbols()}
         >
           Add to current list
         </Button>

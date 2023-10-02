@@ -22,15 +22,3 @@ export default function Home() {
     </Flex>
   )
 }
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const listAllSymbols = makeListAllExchangeSymbols()
-
-  const symbols = await listAllSymbols.execute()
-
-  console.log({ symbols })
-
-  return {
-    props: {},
-  }
-}
