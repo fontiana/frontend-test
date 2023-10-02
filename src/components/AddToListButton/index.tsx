@@ -1,10 +1,14 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {StyledButton} from '../../assets/styles/AddToListButton';
+import {SymbolContext} from '../../contexts/SymbolContext';
 
 interface ButtonProps {
   content: string;
 }
 
 export default function AddToListButton({content}: ButtonProps) {
-  return <StyledButton>{content}</StyledButton>;
+  const {addCheckedSymbolsToList} = useContext(SymbolContext);
+  return (
+    <StyledButton onClick={addCheckedSymbolsToList}>{content}</StyledButton>
+  );
 }
