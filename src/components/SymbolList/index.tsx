@@ -34,9 +34,15 @@ export default function SymbolList() {
         </SearchIconSpan>
       </SearchContainer>
       <ListContainer>
-        {filteredSymbols.map(data => (
-          <SymbolElement key={data.name} symbol={data.name} />
-        ))}
+        {symbols
+          ? filteredSymbols.map(data => (
+              <SymbolElement
+                key={data.name}
+                symbol={data.name}
+                checked={data.checked}
+              />
+            ))
+          : []}
       </ListContainer>
     </Container>
   );
