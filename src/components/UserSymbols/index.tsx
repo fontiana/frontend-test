@@ -37,8 +37,6 @@ export function UserSymbols() {
     (li) => li.name.toLowerCase() === selectedListName.toLowerCase(),
   )
 
-  console.log({ currentList })
-
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
