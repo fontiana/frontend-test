@@ -5,7 +5,7 @@ import {
 } from '../../assets/styles/DashboardPriceBox';
 
 interface DashboardPriceBoxProps {
-  priceChange: number;
+  priceChange: string;
 }
 
 export default function DashboardPriceBox({
@@ -13,7 +13,7 @@ export default function DashboardPriceBox({
 }: DashboardPriceBoxProps) {
   return (
     <>
-      {priceChange > 0 ? (
+      {Number(priceChange) > 0 ? (
         <PositivePriceBox>{priceChange}%</PositivePriceBox>
       ) : (
         <NegativePriceBox>{priceChange}%</NegativePriceBox>
