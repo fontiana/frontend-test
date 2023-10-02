@@ -48,20 +48,26 @@ const data: TableProps[] = [
 ];
 
 export default function UserDashboard() {
-  const {createUserList, userLists} = useContext(SymbolContext);
+  const {createUserList, userLists, changeCurrentUserListIndex} =
+    useContext(SymbolContext);
 
   const serializedUserList = userLists.map(list => ({
     value: list.id,
     label: list.name,
   }));
 
+  const handleListSelectChange = (value: number) => {
+    changeCurrentUserListIndex(value - 1);
+  };
+
   return (
     <Container>
       <ListContainer>
         <StyledSelect
-          defaultValue="list_1"
+          defaultValue={1}
           bordered={false}
           options={serializedUserList}
+          onChange={handleListSelectChange}
         />
         <ListButton onClick={createUserList}>+</ListButton>
       </ListContainer>
