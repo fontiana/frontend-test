@@ -2,7 +2,7 @@ import React from 'react';
 import {
   NegativePriceBox,
   PositivePriceBox,
-} from '../../assets/styles/DashboardPricebox';
+} from '../../assets/styles/DashboardPriceBox';
 
 interface DashboardPriceBoxProps {
   priceChange: number;
