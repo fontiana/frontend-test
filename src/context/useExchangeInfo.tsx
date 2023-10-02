@@ -1,5 +1,5 @@
 import { makeListAllExchangeSymbols } from '@/domain/factory/makeListAllExchangeSymbols'
-import { List } from '@/types/List'
+import { List, ListSymbolsInfo } from '@/types/List'
 import { ExchangeSymbol } from '@/types/Symbol'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import _ from 'lodash'
@@ -17,6 +17,10 @@ interface IExchangeInfoContext {
     symbols: ExchangeSymbol['symbol'][],
   ) => void
   handleSelectList: (listName: string) => void
+  handleUpdateSymbolsInfo: (
+    currentSymbol: string,
+    symbolsInfo: ListSymbolsInfo,
+  ) => void
 }
 const ExchangeInfoContext = createContext({} as IExchangeInfoContext)
 const PAGE_LIMIT = 20
@@ -93,11 +97,34 @@ export const ExchangeInfoProvider = ({
     })
   }
 
+  const handleUpdateSymbolsInfo = (
+    currentSymbol: string,
+    symbolsInfo: ListSymbolsInfo,
+  ) => {
+    setLists((prevLists) => {
+      const findedList = prevLists.find(
+        (li) => li.name.toLowerCase() === selectedList.toLowerCase(),
+      )
+      if (!findedList) return prevLists
+      const listsWithoutFindedList = prevLists.filter(
+        (li) => li.name.toLowerCase() !== selectedList.toLowerCase(),
+      )
+      const listWithoutCurrentSymbol = findedList.symbolsInfo.filter(
+        (symbol) => symbol.symbol.toLowerCase() !== currentSymbol.toLowerCase(),
+      )
+      return [
+        ...listsWithoutFindedList,
+        {
+          name: findedList.name,
+          symbolsInfo: [...listWithoutCurrentSymbol, { ...symbolsInfo }],
+        },
+      ]
+    })
+  }
+
   const handleSelectList = (listName: string) => {
     setSelectedList(listName)
   }
-
-  console.log({ lists, selectedList })
 
   return (
     <ExchangeInfoContext.Provider
@@ -110,6 +137,7 @@ export const ExchangeInfoProvider = ({
         handleAddSymbolsToCurrentList,
         selectedList,
         handleSelectList,
+        handleUpdateSymbolsInfo,
       }}
     >
       {children}

@@ -35,8 +35,6 @@ export function Symbols() {
     setSelectedSymbols([])
   }
 
-  console.log({ searchedTerm })
-
   return (
     <Flex
       flexDir="column"

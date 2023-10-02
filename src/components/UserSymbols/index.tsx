@@ -14,13 +14,68 @@ import {
 import { Inter } from 'next/font/google'
 import { useExchangeInfo } from '@/context/useExchangeInfo'
 import { CreateListModal } from '../CreateListModal'
+import { useEffect } from 'react'
+import { ListSymbolsInfo } from '@/types/List'
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
 })
 
 export function UserSymbols() {
-  const { selectedList, lists, handleSelectList } = useExchangeInfo()
+  const {
+    selectedList: selectedListName,
+    lists,
+    handleSelectList,
+    handleUpdateSymbolsInfo,
+  } = useExchangeInfo()
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const currentList = lists.find(
+      (li) => li.name.toLowerCase() === selectedListName.toLowerCase(),
+    )
+    if (!currentList || currentList?.symbolsInfo?.length <= 0) return
+    const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL
+    if (!url) return
+
+    const symbolsParsed = currentList?.symbolsInfo
+      .map((symbol) => `${symbol.symbol}@ticker`.toLowerCase())
+      .join('/')
+
+    const urlWithSymbols = `${url}?streams=${symbolsParsed}`
+
+    const socket = new WebSocket(urlWithSymbols)
+    socket.onopen = (event) => {
+      console.log('Monitoring symbols list (websocket connection): ', event)
+    }
+    socket.onerror = (event) => {
+      console.log(
+        'An error occurred while opening websocket connection: ',
+        event,
+      )
+    }
+    socket.onmessage = (event) => {
+      const { data } = JSON.parse(event.data)
+      const formattedData: ListSymbolsInfo = {
+        symbol: data?.s,
+        lastPrice: parseFloat(Number(data?.c ?? 0).toFixed(6)),
+        bidPrice: parseFloat(Number(data?.b ?? 0).toFixed(6)),
+        askPrice: parseFloat(Number(data?.a ?? 0).toFixed(6)),
+        priceChange: parseFloat(Number(data?.P ?? 0).toFixed(2)),
+      }
+      console.log({ data, formattedData })
+      handleUpdateSymbolsInfo(data?.s, formattedData)
+    }
+
+    return () => {
+      socket.close()
+      socket.onclose = (event) => {
+        console.log('The websocket connection was closed. ', event)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lists, selectedListName])
 
   return (
     <Flex w="100%" flexDir="column" py="16px" overflowX="hidden">
@@ -90,7 +145,7 @@ export function UserSymbols() {
           </Thead>
           <Tbody>
             {lists
-              ?.find((li) => li.name === selectedList)
+              ?.find((li) => li.name === selectedListName)
               ?.symbolsInfo?.map((symbol) => (
                 <Tr key={symbol.symbol}>
                   <Td>{symbol.symbol}</Td>
