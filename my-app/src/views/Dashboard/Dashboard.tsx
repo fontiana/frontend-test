@@ -33,15 +33,6 @@ export const Dashboard = () => {
     return jsonData;
   });
 
-  console.log(
-    `wss:data-stream.binance.com/stream?streams=${
-      symbol
-        .map((symbolItem) => symbolItem)
-        .join("@ticker/")
-        .toLowerCase() + "@ticker"
-    }`
-  );
-
   useEffect(() => {
     const ws = new WebSocket(
       `wss:data-stream.binance.com/stream?streams=${
@@ -73,8 +64,6 @@ export const Dashboard = () => {
   }, [symbol]);
 
   const symbols = data?.symbols;
-
-  console.log("bidData", bidData);
 
   const handleSymbolRowClick = (symbolName: string) => {
     setLoading(true);
@@ -117,8 +106,6 @@ export const Dashboard = () => {
   ];
 
   const columns1 = [{ id: "symbol", label: "Symbol" }];
-
-  console.log(symbol, "simbolos");
 
   return (
     <S.Wrapper>
