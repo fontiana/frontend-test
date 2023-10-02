@@ -18,8 +18,8 @@ interface ITicker {
 
 export const Dashboard = () => {
   const [symbolsState, setSymbolsState] = useState([]);
-  const [symbol, setSymbol] = useState("");
-  const [bidData, setBidData] = useState<ITicker>();
+  const [symbol, setSymbol] = useState<string[]>([]);
+  const [bidData, setBidData] = useState<ITicker[]>();
   const [loading, setLoading] = useState(false);
 
   const { data, error, isLoading } = useQuery("exchangeInfo", async () => {
@@ -33,28 +33,55 @@ export const Dashboard = () => {
     return jsonData;
   });
 
+  console.log(
+    `wss:data-stream.binance.com/stream?streams=${
+      symbol
+        .map((symbolItem) => symbolItem)
+        .join("@ticker/")
+        .toLowerCase() + "@ticker"
+    }`
+  );
+
   useEffect(() => {
     const ws = new WebSocket(
-      `wss:data-stream.binance.com/stream?streams=${symbol.toLowerCase()}@ticker`
+      `wss:data-stream.binance.com/stream?streams=${
+        symbol
+          .map((symbolItem) => symbolItem)
+          .join("@ticker/")
+          .toLowerCase() + "@ticker"
+      }`
     );
 
     ws.onmessage = (event) => {
-      console.log(event.data);
-      !!event.data && setBidData(JSON.parse(event.data));
+      if (event.data) {
+        setBidData((prev) => {
+          if (!prev) {
+            return [JSON.parse(event.data)];
+          }
+          const index = prev.findIndex(
+            (item) => item.data.s === JSON.parse(event.data).data.s
+          );
+          if (index >= 0) {
+            prev[index].data.c = JSON.parse(event.data).data.c;
+            return prev;
+          }
+          return prev.concat(JSON.parse(event.data));
+        });
+      }
       setLoading(false);
     };
   }, [symbol]);
 
-  console.log(bidData?.data, "aqui");
-
   const symbols = data?.symbols;
+
+  console.log("bidData", bidData);
 
   const handleSymbolRowClick = (symbolName: string) => {
     setLoading(true);
     const selectedSymbolObject = symbols?.filter(
       (item: { symbol: string }) => item.symbol === symbolName
     );
-    setSymbol(selectedSymbolObject[0].symbol);
+    setSymbol((prev) => [...prev, selectedSymbolObject[0].symbol]);
   };
 
   useMemo(() => {
@@ -91,7 +118,7 @@ export const Dashboard = () => {
 
   const columns1 = [{ id: "symbol", label: "Symbol" }];
 
-  console.log(bidData?.data?.P, "Price");
+  console.log(symbol, "simbolos");
 
   return (
     <S.Wrapper>
@@ -132,16 +159,13 @@ export const Dashboard = () => {
             columns={columns}
             tableWidth="100%"
             rows={
-              (bidData?.data && [
-                {
-                  symbol: bidData.data.s,
-                  last_price: bidData.data.P,
-                  ask_price: bidData.data.a,
-                  bid_price: bidData.data.b,
-                  price_change: bidData.data.P,
-                },
-              ]) ||
-              []
+              bidData?.map((item) => ({
+                symbol: item.data.s,
+                last_price: item.data.P,
+                ask_price: item.data.a,
+                bid_price: item.data.b,
+                price_change: item.data.P,
+              })) || []
             }
           />
         )}
