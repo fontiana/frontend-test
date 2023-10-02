@@ -1,7 +1,5 @@
 import {
-  Button,
   Flex,
-  Icon,
   Select,
   Table,
   Thead,
@@ -12,7 +10,6 @@ import {
   TableContainer,
   Text,
 } from '@chakra-ui/react'
-import { AiOutlinePlusCircle } from 'react-icons/ai'
 
 import { Inter } from 'next/font/google'
 import { useExchangeInfo } from '@/context/useExchangeInfo'

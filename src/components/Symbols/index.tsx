@@ -10,21 +10,32 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { BsSearch } from 'react-icons/bs'
 import { SymbolCheckBox } from '../SymbolCheckBox'
+import { useDebounce } from '@/hooks/useDebounce'
 
 export function Symbols() {
+  const [searchedTerm, setSearchedTerm] = useState('')
   const [selectedSymbols, setSelectedSymbols] = useState<string[]>([])
-  const { symbolsList, handleAddSymbolsToCurrentList, selectedList } =
-    useExchangeInfo()
+  const {
+    completedSymbolsList,
+    symbolsList,
+    handleAddSymbolsToCurrentList,
+    selectedList,
+  } = useExchangeInfo()
 
-  console.log({ selectedSymbols })
+  const debounceSearch = useDebounce(
+    (term: string) => setSearchedTerm(term),
+    1000,
+  )
 
   const handleAddSymbols = () => {
     handleAddSymbolsToCurrentList(selectedList, selectedSymbols)
     setSelectedSymbols([])
   }
+
+  console.log({ searchedTerm })
 
   return (
     <Flex
@@ -45,6 +56,7 @@ export function Symbols() {
             borderColor="gray.400"
             outline="0px"
             _focusVisible={{ borderColor: 'gray.900' }}
+            onChange={(e) => debounceSearch(e.target.value)}
           />
           <InputRightElement pointerEvents="none">
             <Icon as={BsSearch} />
@@ -80,15 +92,35 @@ export function Symbols() {
           </FormLabel>
         </FormControl>
         <Flex flexDir="column" h="100%" overflowY="auto">
-          {symbolsList.map((symbol, index, arr) => (
-            <SymbolCheckBox
-              key={symbol}
-              symbol={symbol}
-              isChecked={selectedSymbols.includes(symbol)}
-              setSelectedSymbols={setSelectedSymbols}
-              isLast={index === arr.length - 1}
-            />
-          ))}
+          <Suspense fallback={<span>Carregando...</span>}>
+            {searchedTerm.length > 0 ? (
+              <>
+                {completedSymbolsList
+                  .filter((sy) => sy.toLowerCase().includes(searchedTerm))
+                  .map((symbol, index, arr) => (
+                    <SymbolCheckBox
+                      key={symbol}
+                      symbol={symbol}
+                      isChecked={selectedSymbols.includes(symbol)}
+                      setSelectedSymbols={setSelectedSymbols}
+                      isLast={index === arr.length - 1}
+                    />
+                  ))}
+              </>
+            ) : (
+              <>
+                {symbolsList.map((symbol, index, arr) => (
+                  <SymbolCheckBox
+                    key={symbol}
+                    symbol={symbol}
+                    isChecked={selectedSymbols.includes(symbol)}
+                    setSelectedSymbols={setSelectedSymbols}
+                    isLast={index === arr.length - 1}
+                  />
+                ))}
+              </>
+            )}
+          </Suspense>
         </Flex>
       </Flex>
       <Flex w="100%" mt="16px">
