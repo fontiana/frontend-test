@@ -14,14 +14,18 @@ import {
 import { Inter } from 'next/font/google'
 import { useExchangeInfo } from '@/context/useExchangeInfo'
 import { CreateListModal } from '../CreateListModal'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { ListSymbolsInfo } from '@/types/List'
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
 })
 
+const URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? ''
+
 export function UserSymbols() {
+  const [wsUrl, setWsUrl] = useState(URL)
+
   const {
     selectedList: selectedListName,
     lists,
@@ -29,23 +33,18 @@ export function UserSymbols() {
     handleUpdateSymbolsInfo,
   } = useExchangeInfo()
 
+  const currentList = lists.find(
+    (li) => li.name.toLowerCase() === selectedListName.toLowerCase(),
+  )
+
+  console.log({ currentList })
+
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const currentList = lists.find(
-      (li) => li.name.toLowerCase() === selectedListName.toLowerCase(),
-    )
     if (!currentList || currentList?.symbolsInfo?.length <= 0) return
-    const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL
-    if (!url) return
 
-    const symbolsParsed = currentList?.symbolsInfo
-      .map((symbol) => `${symbol.symbol}@ticker`.toLowerCase())
-      .join('/')
-
-    const urlWithSymbols = `${url}?streams=${symbolsParsed}`
-
-    const socket = new WebSocket(urlWithSymbols)
+    const socket = new WebSocket(wsUrl)
     socket.onerror = (event) => {
       console.log(
         'An error occurred while opening websocket connection: ',
@@ -67,11 +66,21 @@ export function UserSymbols() {
     return () => {
       socket.close()
       socket.onclose = (event) => {
-        console.log('The websocket connection was closed. ', event)
+        console.log('Websocket connection closed: ', event)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lists, selectedListName])
+  }, [selectedListName, wsUrl])
+
+  useEffect(() => {
+    const symbolsParsed = currentList?.symbolsInfo
+      .map((symbol) => `${symbol.symbol}@ticker`.toLowerCase())
+      .join('/')
+
+    const urlWithSymbols = `${URL}?streams=${symbolsParsed}`
+    setWsUrl(urlWithSymbols)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentList, selectedListName])
 
   return (
     <Flex w="100%" flexDir="column" py="16px" overflowX="hidden">
