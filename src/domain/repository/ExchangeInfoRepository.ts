@@ -1,5 +1,5 @@
-import { binanceApi } from '@/services/api'
 import { ExchangeSymbol } from '@/types/Symbol'
+import axios from 'axios'
 
 interface GetAllAvailableSymbolsApiResponse {
   timezone: string
@@ -14,9 +14,14 @@ interface IExchangeInfoRepository {
 export class ExchangeInfoRepository implements IExchangeInfoRepository {
   async getAllAvailableSymbols(): Promise<ExchangeSymbol['symbol'][]> {
     try {
-      const response =
-        await binanceApi.get<GetAllAvailableSymbolsApiResponse>('exchangeInfo')
-      return response.data.symbols.map((sy) => sy.symbol)
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_REST_URL}/exchangeInfo`,
+        {
+          method: 'GET',
+        },
+      )
+      const data: GetAllAvailableSymbolsApiResponse = await response.json()
+      return data.symbols.map((sy) => sy.symbol)
     } catch (err) {
       return []
     }

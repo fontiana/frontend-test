@@ -1,8 +1,6 @@
 import { Symbols } from '@/components/Symbols'
 import { UserSymbols } from '@/components/UserSymbols'
-import { makeListAllExchangeSymbols } from '@/domain/factory/makeListAllExchangeSymbols'
 import { Divider, Flex } from '@chakra-ui/react'
-import { GetServerSideProps } from 'next'
 
 export default function Home() {
   return (
