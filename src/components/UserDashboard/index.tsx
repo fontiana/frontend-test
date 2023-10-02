@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   Container,
   ListButton,
@@ -8,41 +8,24 @@ import {
 import {SymbolContext} from '../../contexts/SymbolContext';
 import WatchListTable from '../WatchListTable';
 
-interface WatchListProps {
+interface DetailedSymbolDTO {
   symbol: string;
   lastPrice: number;
   bidPrice: number;
   askPrice: number;
-  priceChange: number;
+  priceChange: string;
 }
 
-const data: WatchListProps[] = [
-  {
-    symbol: 'AAPL',
-    lastPrice: 150.25,
-    bidPrice: 150.1,
-    askPrice: 150.4,
-    priceChange: -0.5,
-  },
-  {
-    symbol: 'GOOGL',
-    lastPrice: 2700.75,
-    bidPrice: 2700.5,
-    askPrice: 2701.0,
-    priceChange: 0.7,
-  },
-  {
-    symbol: 'MSFT',
-    lastPrice: 305.6,
-    bidPrice: 305.55,
-    askPrice: 305.65,
-    priceChange: 0.2,
-  },
-];
-
 export default function UserDashboard() {
-  const {createUserList, userLists, changeCurrentUserListIndex} =
-    useContext(SymbolContext);
+  const {
+    createUserList,
+    userLists,
+    changeCurrentUserListIndex,
+    currentUserListIndex,
+    changeUserListState,
+  } = useContext(SymbolContext);
+
+  const [inStreamConnection, setInStreamConnection] = useState(false);
 
   const serializedUserList = userLists.map(list => ({
     value: list.id,
@@ -52,6 +35,55 @@ export default function UserDashboard() {
   const handleListSelectChange = (value: number) => {
     changeCurrentUserListIndex(value - 1);
   };
+
+  const BASE_URL = 'wss://stream.binance.com:9443/stream?streams=';
+
+  const url =
+    BASE_URL +
+    userLists[currentUserListIndex].symbols
+      .map(symbol => `${symbol.name.toLowerCase()}@ticker`)
+      .join('/');
+
+  useEffect(() => {
+    if (
+      userLists[currentUserListIndex].symbols.length > 0 &&
+      !inStreamConnection
+    ) {
+      const socket = new WebSocket(url);
+
+      socket.onopen = event => {
+        setInStreamConnection(true);
+        console.log('Open watchlist websocket connection: ', event);
+      };
+
+      socket.onerror = event => {
+        console.log('An error occurred: ', event);
+      };
+
+      socket.onmessage = event => {
+        const {data} = JSON.parse(event.data);
+
+        const formattedData: DetailedSymbolDTO = {
+          symbol: data.s,
+          lastPrice: parseFloat(Number(data.c).toFixed(4)),
+          bidPrice: parseFloat(Number(data.b).toFixed(4)),
+          askPrice: parseFloat(Number(data.a).toFixed(4)),
+          priceChange: data.P,
+        };
+
+        changeUserListState(formattedData);
+      };
+
+      return () => {
+        socket.close();
+
+        setInStreamConnection(false);
+        socket.onclose = event => {
+          console.log('Closed watchlist websocker connection: ', event);
+        };
+      };
+    }
+  }, [url, userLists[currentUserListIndex]]);
 
   return (
     <Container>
@@ -64,7 +96,7 @@ export default function UserDashboard() {
         />
         <ListButton onClick={createUserList}>+</ListButton>
       </ListContainer>
-      <WatchListTable data={data} />
+      <WatchListTable data={userLists[currentUserListIndex].detailedSymbols} />
     </Container>
   );
 }

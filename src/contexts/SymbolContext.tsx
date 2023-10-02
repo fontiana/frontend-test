@@ -6,11 +6,19 @@ interface Symbol {
   name: string;
   checked: boolean;
 }
+interface DetailedSymbol {
+  symbol: string;
+  lastPrice: number;
+  bidPrice: number;
+  askPrice: number;
+  priceChange: string;
+}
 
-interface List {
+interface UserList {
   id: number;
   name: string;
   symbols: Symbol[];
+  detailedSymbols: Record<string, DetailedSymbol>;
 }
 
 interface ProviderProps {
@@ -19,22 +27,25 @@ interface ProviderProps {
 
 interface ContextProps {
   symbols: Symbol[];
-  userLists: List[];
+  userLists: UserList[];
+  currentUserListIndex: number;
   handleSymbolCheck: (name: string) => void;
   createUserList: () => void;
   changeCurrentUserListIndex: (index: number) => void;
   addCheckedSymbolsToList: () => void;
+  changeUserListState: (formattedData: DetailedSymbol) => void;
 }
 
 export const SymbolContext = createContext({} as ContextProps);
 
 export function SymbolContextProvider({children}: ProviderProps) {
   const [symbols, setSymbols] = useState<Symbol[]>([]);
-  const [userLists, setUserLists] = useState<List[]>([
+  const [userLists, setUserLists] = useState<UserList[]>([
     {
       id: 1,
       name: 'List 1',
       symbols: [],
+      detailedSymbols: {},
     },
   ]);
   const [currentUserListIndex, setCurrentUserListIndex] = useState<number>(0);
@@ -78,6 +89,7 @@ export function SymbolContextProvider({children}: ProviderProps) {
         id: userLists.length + 1,
         name: `List ${userLists.length + 1}`,
         symbols: [],
+        detailedSymbols: {},
       },
     ]);
   }
@@ -97,6 +109,18 @@ export function SymbolContextProvider({children}: ProviderProps) {
     setCurrentUserListIndex(index);
   }
 
+  function changeUserListState(formattedData: DetailedSymbol) {
+    setUserLists(prevUserLists => {
+      const updatedUserLists = [...prevUserLists];
+      const detailedSymbols = {
+        ...updatedUserLists[currentUserListIndex]?.detailedSymbols,
+        [formattedData.symbol]: formattedData,
+      };
+      updatedUserLists[currentUserListIndex].detailedSymbols = detailedSymbols;
+      return updatedUserLists;
+    });
+  }
+
   useEffect(() => {
     getSymbols();
   }, []);
@@ -110,6 +134,8 @@ export function SymbolContextProvider({children}: ProviderProps) {
         createUserList,
         changeCurrentUserListIndex,
         addCheckedSymbolsToList,
+        currentUserListIndex,
+        changeUserListState,
       }}>
       {children}
     </SymbolContext.Provider>
