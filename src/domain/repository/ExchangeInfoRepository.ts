@@ -8,19 +8,15 @@ interface GetAllAvailableSymbolsApiResponse {
 }
 
 interface IExchangeInfoRepository {
-  getAllAvailableSymbols(): Promise<Pick<ExchangeSymbol, 'symbol'>[]>
+  getAllAvailableSymbols(): Promise<ExchangeSymbol['symbol'][]>
 }
 
 export class ExchangeInfoRepository implements IExchangeInfoRepository {
-  async getAllAvailableSymbols(): Promise<Pick<ExchangeSymbol, 'symbol'>[]> {
+  async getAllAvailableSymbols(): Promise<ExchangeSymbol['symbol'][]> {
     try {
-      const response = await binanceApi.get<GetAllAvailableSymbolsApiResponse>(
-        '/exchangeInfo',
-        {
-          method: 'POST',
-        },
-      )
-      return response.data.symbols
+      const response =
+        await binanceApi.get<GetAllAvailableSymbolsApiResponse>('exchangeInfo')
+      return response.data.symbols.map((sy) => sy.symbol)
     } catch (err) {
       return []
     }

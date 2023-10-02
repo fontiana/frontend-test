@@ -4,7 +4,7 @@ import { ExchangeInfoRepository } from '../repository/ExchangeInfoRepository'
 export class ListAllExchangeSymbols {
   constructor(private exchangeInfoRepository: ExchangeInfoRepository) {}
 
-  async execute(): Promise<Pick<ExchangeSymbol, 'symbol'>[]> {
+  async execute(): Promise<ExchangeSymbol['symbol'][]> {
     const symbols = await this.exchangeInfoRepository.getAllAvailableSymbols()
     return symbols
   }

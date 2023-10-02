@@ -3,7 +3,7 @@ import { ExchangeSymbol } from '@/types/Symbol'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
 interface IExchangeInfoContext {
-  symbolsList: Pick<ExchangeSymbol, 'symbol'>[]
+  symbolsList: ExchangeSymbol['symbol'][]
 }
 
 const ExchangeInfoContext = createContext({} as IExchangeInfoContext)
@@ -13,9 +13,7 @@ export const ExchangeInfoProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const [symbolsList, setSymbolsList] = useState<
-    Pick<ExchangeSymbol, 'symbol'>[]
-  >([])
+  const [symbolsList, setSymbolsList] = useState<ExchangeSymbol['symbol'][]>([])
 
   useEffect(() => {
     const listAllSymbols = makeListAllExchangeSymbols()
