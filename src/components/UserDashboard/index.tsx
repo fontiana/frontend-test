@@ -3,19 +3,12 @@ import {
   Container,
   ListButton,
   ListContainer,
-  PercentageCell,
   StyledSelect,
-  SymbolCell,
-  Table,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
 } from '../../assets/styles/UserDashboard';
-import DashboardPriceBox from '../DashboardPriceBox';
 import {SymbolContext} from '../../contexts/SymbolContext';
+import WatchListTable from '../WatchListTable';
 
-interface TableProps {
+interface WatchListProps {
   symbol: string;
   lastPrice: number;
   bidPrice: number;
@@ -23,7 +16,7 @@ interface TableProps {
   priceChange: number;
 }
 
-const data: TableProps[] = [
+const data: WatchListProps[] = [
   {
     symbol: 'AAPL',
     lastPrice: 150.25,
@@ -71,30 +64,7 @@ export default function UserDashboard() {
         />
         <ListButton onClick={createUserList}>+</ListButton>
       </ListContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableHeaderCell>Symbol</TableHeaderCell>
-            <TableHeaderCell>Last Price</TableHeaderCell>
-            <TableHeaderCell>Bid Price</TableHeaderCell>
-            <TableHeaderCell>Ask Price</TableHeaderCell>
-            <TableHeaderCell>Price Change (%)</TableHeaderCell>
-          </TableRow>
-        </TableHead>
-        <tbody>
-          {data.map((item, index) => (
-            <TableRow key={index}>
-              <SymbolCell>{item.symbol}</SymbolCell>
-              <TableCell>{item.lastPrice}</TableCell>
-              <TableCell>{item.bidPrice}</TableCell>
-              <TableCell>{item.askPrice}</TableCell>
-              <PercentageCell>
-                <DashboardPriceBox priceChange={item.priceChange} />
-              </PercentageCell>
-            </TableRow>
-          ))}
-        </tbody>
-      </Table>
+      <WatchListTable data={data} />
     </Container>
   );
 }
