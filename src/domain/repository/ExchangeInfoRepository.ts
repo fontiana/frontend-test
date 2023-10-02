@@ -1,5 +1,4 @@
 import { ExchangeSymbol } from '@/types/Symbol'
-import axios from 'axios'
 
 interface GetAllAvailableSymbolsApiResponse {
   timezone: string
