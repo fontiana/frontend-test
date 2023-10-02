@@ -10,19 +10,21 @@ import {
 } from '../../assets/styles/WatchListTable';
 import DashboardPriceBox from '../DashboardPriceBox';
 
-interface WatchListProps {
+interface DetailedSymbolDTO {
   symbol: string;
   lastPrice: number;
   bidPrice: number;
   askPrice: number;
-  priceChange: number;
+  priceChange: string;
 }
 
 interface DataProps {
-  data: WatchListProps[];
+  data: Record<string, DetailedSymbolDTO>;
 }
 
 export default function WatchListTable({data}: DataProps) {
+  const dataArray = Object.values(data);
+
   return (
     <Table>
       <TableHead>
@@ -35,17 +37,19 @@ export default function WatchListTable({data}: DataProps) {
         </TableRow>
       </TableHead>
       <tbody>
-        {data.map((item, index) => (
-          <TableRow key={index}>
-            <SymbolCell>{item.symbol}</SymbolCell>
-            <TableCell>{item.lastPrice}</TableCell>
-            <TableCell>{item.bidPrice}</TableCell>
-            <TableCell>{item.askPrice}</TableCell>
-            <PercentageCell>
-              <DashboardPriceBox priceChange={item.priceChange} />
-            </PercentageCell>
-          </TableRow>
-        ))}
+        {dataArray.length > 0
+          ? dataArray.map((item, index) => (
+              <TableRow key={index}>
+                <SymbolCell>{item.symbol}</SymbolCell>
+                <TableCell>{item.lastPrice}</TableCell>
+                <TableCell>{item.bidPrice}</TableCell>
+                <TableCell>{item.askPrice}</TableCell>
+                <PercentageCell>
+                  <DashboardPriceBox priceChange={item.priceChange} />
+                </PercentageCell>
+              </TableRow>
+            ))
+          : []}
       </tbody>
     </Table>
   );
