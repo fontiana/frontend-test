@@ -15,25 +15,35 @@ import {
 import { AiOutlinePlusCircle } from 'react-icons/ai'
 
 import { Inter } from 'next/font/google'
+import { useExchangeInfo } from '@/context/useExchangeInfo'
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
 })
 
 export function UserSymbols() {
+  const { selectedList, lists } = useExchangeInfo()
+
   return (
     <Flex w="100%" flexDir="column" py="16px" overflowX="hidden">
       <Flex w="100%" gap="16px" px="16px">
-        <Select defaultValue="list-a" w="100%" borderColor="gray.400">
-          <option value="list-a">List A</option>
-          <option value="list-b">List B</option>
-          <option value="list-c">List C</option>
+        <Select defaultValue="List A" w="100%" borderColor="gray.400">
+          {lists.map((list) => (
+            <option key={list.name} value={list.name}>
+              {list.name}
+            </option>
+          ))}
         </Select>
         <Button colorScheme="blue">
           <Icon as={AiOutlinePlusCircle} />
         </Button>
       </Flex>
-      <TableContainer mt="16px" borderColor="gray.300" borderWidth="1px">
+      <TableContainer
+        mt="16px"
+        borderColor="gray.300"
+        borderWidth="1px"
+        borderRadius="12px"
+      >
         <Table variant="unstyled">
           <Thead bg="gray.300" h="56px">
             <Tr>
@@ -78,12 +88,12 @@ export function UserSymbols() {
             </Tr>
           </Thead>
           <Tbody>
-            {Array.from({ length: 4 }).map((_, index) => (
-              <Tr key={index}>
-                <Td>ETHBTC</Td>
-                <Td>0.0025</Td>
-                <Td>0.0024</Td>
-                <Td>0.0026</Td>
+            {selectedList.symbolsInfo.map((symbol) => (
+              <Tr key={symbol.symbol}>
+                <Td>{symbol.symbol}</Td>
+                <Td>{symbol.lastPrice}</Td>
+                <Td>{symbol.bidPrice}</Td>
+                <Td>{symbol.askPrice}</Td>
                 <Td>
                   <Flex
                     align="center"
@@ -97,7 +107,7 @@ export function UserSymbols() {
                     minW="40px"
                   >
                     <Text color="green.700" fontWeight="500">
-                      20%
+                      {symbol.priceChange}%
                     </Text>
                   </Flex>
                 </Td>
