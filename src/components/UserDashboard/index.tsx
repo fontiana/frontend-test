@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {
   Container,
   ListButton,
@@ -25,8 +25,6 @@ export default function UserDashboard() {
     changeUserListState,
   } = useContext(SymbolContext);
 
-  const [inStreamConnection, setInStreamConnection] = useState(false);
-
   const serializedUserList = userLists.map(list => ({
     value: list.id,
     label: list.name,
@@ -45,14 +43,10 @@ export default function UserDashboard() {
       .join('/');
 
   useEffect(() => {
-    if (
-      userLists[currentUserListIndex].symbols.length > 0 &&
-      !inStreamConnection
-    ) {
+    if (userLists[currentUserListIndex].symbols.length > 0) {
       const socket = new WebSocket(url);
 
       socket.onopen = event => {
-        setInStreamConnection(true);
         console.log('Open watchlist websocket connection: ', event);
       };
 
@@ -77,13 +71,12 @@ export default function UserDashboard() {
       return () => {
         socket.close();
 
-        setInStreamConnection(false);
         socket.onclose = event => {
           console.log('Closed watchlist websocker connection: ', event);
         };
       };
     }
-  }, [url, userLists[currentUserListIndex]]);
+  }, [url, currentUserListIndex]);
 
   return (
     <Container>
