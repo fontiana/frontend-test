@@ -12,7 +12,7 @@ const getBorderColor = () =>
 
 const getColor = () =>
   css`
-    ${({ theme }) => theme.color.white}
+    ${({ theme }) => theme.color.primaryVariant}
   `;
 
 export const Wrapper = styled.div`

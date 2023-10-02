@@ -6,6 +6,7 @@ declare module "style-components" {
 
     color: {
       primary: string;
+      primaryVariant: string;
       secondary: string;
       tertiary: string;
 

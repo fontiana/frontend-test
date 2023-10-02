@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 
 const getBackgroundColor = () =>
   css`
-    ${({ theme }) => theme.color.secondary}
+    ${({ theme }) => theme.color.primaryVariant}
   `;
 
 const getBorderColor = () =>
@@ -17,7 +17,7 @@ type GetFontColorProps = {
 const getFontColor = ({ info }: GetFontColorProps) =>
   info
     ? css`
-        ${({ theme }) => theme.color.info}
+        ${({ theme }) => theme.color.secondary}
       `
     : css`
         ${({ theme }) => theme.color.white}
@@ -29,6 +29,10 @@ export const Wrapper = styled.div`
   background-color: ${getBackgroundColor};
   border-right: 1px solid ${getBorderColor};
   padding-left: 24px;
+
+  @media screen and (max-width: 500px) {
+    background-color: ${({ theme }) => theme.color.secondary};
+  }
 `;
 
 export const Logo = styled.img`
@@ -74,7 +78,7 @@ export const MenuItemLink = styled.a`
 `;
 
 export const MyWallet = styled.span`
-  font-size: 700;
+  font-weight: 700;
 `;
 
 export const IconAndItemWrapper = styled.div;
