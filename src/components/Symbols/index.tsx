@@ -8,9 +8,8 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Text,
-  VStack,
 } from '@chakra-ui/react'
+import { useEffect } from 'react'
 import { BsSearch } from 'react-icons/bs'
 
 const SYMBOL_LIST = [
