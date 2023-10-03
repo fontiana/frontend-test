@@ -1,3 +1,6 @@
+# Preview
+The project is online at this URL: https://frontend-test-gilt-nine.vercel.app/
+
 # Process
 
 Fork the repository into your account. Once your code is ready open a pull-request on this repository and we will review it.
