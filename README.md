@@ -6,7 +6,7 @@ Fork the repository into your account. Once your code is ready open a pull-reque
 
 The aim of the test is to develop a mini-application for managing a Binance websocket pricing update.
 
-1. The appliction should consume this endpoint `GET` https://data.binance.com/api/v3/exchangeInfo and list it. 
+1. The appliction should consume this endpoint `GET` https://api.binance.com/api/v3/exchangeInfo and list it. 
 2. Users should be able create a list of symbols.
 3. Users should be able to add symbols to a list for watching the last price updates, best bid price, best ask price and price change percent.
    1. For that, the application should connect to a websocket using the symbols previously selected by the user.
