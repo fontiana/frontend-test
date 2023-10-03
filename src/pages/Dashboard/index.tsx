@@ -1,13 +1,13 @@
 import ListSymbols from "./components/ListSymbols";
 import Symbols from "./components/Symbols";
+import * as S from "./styles";
 
 const Dashboard = () => {
   return (
-    <div>
-      Dashboard
+    <S.Wrapper>
       <Symbols />
       <ListSymbols />
-    </div>
+    </S.Wrapper>
   );
 };
 
