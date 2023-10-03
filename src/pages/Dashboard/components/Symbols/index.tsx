@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import * as S from "./styles";
 import { getSymbols } from "../../../../api/binance";
+import { useExchangeInfo } from "../../context/useExchangeInfo";
 
 interface SymbolI {
   symbol: string;
@@ -10,11 +11,11 @@ interface SymbolI {
 const Symbols = () => {
   const [symbols, setSymbols] = useState([] as SymbolI[]);
   const [isChecked, setIsChecked] = useState(false);
+  const { setExchange } = useExchangeInfo();
 
   useEffect(() => {
     const fetchSymbols = async () => {
       const symbols = await getSymbols();
-      console.log("🚀 ~ file: index.tsx:8 ~ useEffect ~ symbols:", symbols);
       setSymbols(symbols.symbols);
     };
 
@@ -31,6 +32,7 @@ const Symbols = () => {
         ...updatedSymbols[i],
         checked: e.target.checked,
       };
+
       return updatedSymbols;
     });
   };
@@ -41,11 +43,21 @@ const Symbols = () => {
         ...symbol,
         checked: e.target.checked,
       }));
+
       return updatedSymbols;
     });
 
     setIsChecked(e.target.checked);
   };
+
+  const handleExchange = () => {
+    const listSymbols = [...symbols].filter(
+      (symbol: any) => symbol.checked === true
+    );
+
+    setExchange(listSymbols);
+  };
+
   return (
     <S.Wrapper>
       <S.Search type="search" placeholder="Procurar..." />
@@ -74,7 +86,7 @@ const Symbols = () => {
           );
         })}
       </ul>
-      <S.Button value="Adicionar a lista" />
+      <S.Button value="Adicionar a lista" onClick={handleExchange} />
     </S.Wrapper>
   );
 };

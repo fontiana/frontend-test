@@ -1,13 +1,16 @@
 import ListSymbols from "./components/ListSymbols";
 import Symbols from "./components/Symbols";
+import { ExchangeInfoProvider } from "./context/useExchangeInfo";
 import * as S from "./styles";
 
 const Dashboard = () => {
   return (
-    <S.Wrapper>
-      <Symbols />
-      <ListSymbols />
-    </S.Wrapper>
+    <ExchangeInfoProvider>
+      <S.Wrapper>
+        <Symbols />
+        <ListSymbols />
+      </S.Wrapper>
+    </ExchangeInfoProvider>
   );
 };
 
