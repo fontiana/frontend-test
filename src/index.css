@@ -1,6 +1,28 @@
+:root {
+  --primary-color: #1e4147; /* Azul para destaque */
+  --secondary-color: #fff9c4;
+  --secondary-color-light: #ffca28; /* Amarelo para destaques secundários */
+  --background-color: #111111; /* Fundo escuro */
+  --text-color: #ffffff; /* Cor do texto principal */
+  --subtext-color: #cccccc; /* Cor do texto secundário */
+  --link-color: #1e4147; /* Cor dos links */
+  --error-color: #ff6347;
+  --white: #fff;
+  --black: #000;
+}
+
 body {
-  margin: 0;
   font-family: "Exo 2", sans-serif;
+  background-image: linear-gradient(
+    to right bottom,
+    #000000,
+    #171317,
+    #1f2029,
+    #20303b,
+    #1e4147
+  );
+  height: 100vh;
+  color: var(--text-color);
 }
 
 * {
@@ -11,11 +33,14 @@ body {
   border: 0;
 }
 
-:root {
-  /* add variables */
+#root {
+  max-width: 1440px;
+  min-width: 320px;
+  margin: auto;
 }
 
-#root {
-  max-width: 1024px;
-  margin: auto;
+/* template */
+main {
+  padding: 12px;
+  overflow: hidden;
 }
