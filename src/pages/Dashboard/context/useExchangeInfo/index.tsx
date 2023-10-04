@@ -1,6 +1,7 @@
 import React, { createContext, useContext, ReactNode, useReducer } from "react";
 import { reducer } from "./reducer";
 import { ACTION_TYPE } from "./actions";
+import { ExchangeInfoI } from "../../types";
 
 type ActionI = {
   type: ACTION_TYPE;
@@ -10,7 +11,7 @@ type ActionI = {
 interface SymbolContextI {
   exchanges: {
     currentList: string;
-    lists: any;
+    lists: ExchangeInfoI;
   };
   dispatchExchanges: React.Dispatch<ActionI>;
 }

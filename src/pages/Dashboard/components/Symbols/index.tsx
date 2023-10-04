@@ -18,6 +18,7 @@ interface SymbolI {
   symbol: string;
   checked: boolean;
   // TODO: increase more details about object Symbol
+  // Need defined rule to show symbols list
 }
 
 const Symbols = () => {
@@ -66,14 +67,14 @@ const Symbols = () => {
     }
   };
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: object) => {
     if (exchanges.currentList === "") {
       alert("Please select a list");
     }
 
     const listSymbols = Object.entries(data)
-      .filter(([key, value]) => value === true)
-      .map(([key, value]) => key);
+      .filter(([_, value]) => value === true)
+      .map(([key]) => key);
 
     dispatchExchanges({
       type: ACTION_TYPE.ADD_TO_LIST,

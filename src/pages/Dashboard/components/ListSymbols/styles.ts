@@ -112,13 +112,13 @@ export const TableRow = styled.tr`
   }
 `;
 
-export const TableCell = styled.td<{ isPositive?: number }>`
+export const TableCell = styled.td<{ ispositive?: string }>`
   padding: 18px 0;
   align-items: center;
   margin: 10px;
 
-  color: ${({ isPositive }) => {
-    const value = isPositive ?? 0;
+  color: ${({ ispositive }) => {
+    const value = ispositive ? parseFloat(ispositive) : 0;
     if (value > 0) {
       return "var(--text-color-positive)";
     }

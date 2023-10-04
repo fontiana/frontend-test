@@ -2,22 +2,22 @@ import { useState, useCallback, useEffect } from "react";
 import * as S from "../../styles";
 import useWebSocket from "react-use-websocket";
 import { useExchangeInfo } from "../../../../context/useExchangeInfo";
+import { SymbolInfoI, ExchangeInfoI } from "../../../../types";
 
 interface WebSocketMessage {
   stream: string;
-  data: any;
-  // TODO: increase more details about object WebSocketMessage
+  data: SymbolInfoI;
 }
 
 const ExchangeTable = () => {
-  const [exchangesInfo, setExchangesInfo] = useState<any[]>([]);
+  const [exchangesInfo, setExchangesInfo] = useState<ExchangeInfoI>({});
 
   const { exchanges } = useExchangeInfo();
 
   const symbolList =
     exchanges.currentList !== "" &&
     Object.values(exchanges.lists[exchanges.currentList])
-      ?.map((symbol: any) => symbol.toLowerCase())
+      ?.map((symbol: string) => symbol.toLowerCase())
       .join("@ticker/");
 
   const wsUrl = `wss://stream.binance.com:9443/stream?streams=${symbolList}`;
@@ -46,15 +46,15 @@ const ExchangeTable = () => {
     []
   );
 
-  const formatPercentage = useCallback((value: number) => {
-    return (value * 10000).toFixed(2);
+  const formatPercentage = useCallback((value: string) => {
+    return (parseFloat(value) * 10000).toFixed(2);
   }, []);
 
   useEffect(() => {
-    setExchangesInfo([]);
+    setExchangesInfo({});
 
     return () => {
-      setExchangesInfo([]);
+      setExchangesInfo({});
     };
   }, [exchanges.currentList]);
 
@@ -76,7 +76,8 @@ const ExchangeTable = () => {
             <S.TableCell>{formatNumberToFixed(value.c)}</S.TableCell>
             <S.TableCell>{formatNumberToFixed(value.b)}</S.TableCell>
             <S.TableCell>{formatNumberToFixed(value.a)}</S.TableCell>
-            <S.TableCell isPositive={parseFloat(value.p) * 10000}>
+            {/* TODO: Resolve warning */}
+            <S.TableCell ispositive={formatPercentage(value.p)}>
               {formatPercentage(value.p)}
             </S.TableCell>
           </S.TableRow>
