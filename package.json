@@ -16,6 +16,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.47.0",
     "react-scripts": "5.0.1",
+    "react-test-renderer": "^18.2.0",
     "react-use-websocket": "^4.5.0",
     "styled-components": "^6.0.8",
     "styled-media-query": "^2.1.2",
@@ -47,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-test-renderer": "^18.0.3",
     "axios-mock-adapter": "^1.22.0"
   }
 }
