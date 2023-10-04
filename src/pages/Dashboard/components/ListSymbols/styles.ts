@@ -38,7 +38,7 @@ export const SelectList = styled.select`
   color: var(--black);
 `;
 
-export const ButtonAddList = styled.button`
+export const ButtonAddList = styled.span`
   align-items: center;
   justify-content: center;
   background-color: var(--black);

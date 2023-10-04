@@ -1,29 +1,32 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import React, { createContext, useContext, ReactNode, useReducer } from "react";
+import { reducer } from "./reducer";
+import { ACTION_TYPE } from "./actions";
 
-interface SymbolI {
-  symbol: string;
-  checked: boolean;
+type ActionI = {
+  type: ACTION_TYPE;
+  payload: any;
+};
+
+interface SymbolContextI {
+  exchanges: {
+    currentList: string;
+    lists: any;
+  };
+  dispatchExchanges: React.Dispatch<ActionI>;
 }
 
-interface ExchangeInfoI {
-  exchanges: SymbolI[];
-  setExchange: Dispatch<SetStateAction<SymbolI[]>>;
-}
-
-const ExchangeInfoContext = createContext<ExchangeInfoI | undefined>(undefined);
+const ExchangeInfoContext = createContext<SymbolContextI | undefined>(
+  undefined
+);
 
 export const ExchangeInfoProvider = ({ children }: { children: ReactNode }) => {
-  const [exchanges, setExchange] = useState<SymbolI[]>([]);
+  const [exchanges, dispatchExchanges] = useReducer(reducer, {
+    currentList: "",
+    lists: {},
+  });
 
   return (
-    <ExchangeInfoContext.Provider value={{ exchanges, setExchange }}>
+    <ExchangeInfoContext.Provider value={{ exchanges, dispatchExchanges }}>
       {children}
     </ExchangeInfoContext.Provider>
   );

@@ -11,6 +11,7 @@ import { useExchangeInfo } from "../../context/useExchangeInfo";
 import Spinner from "../../../../components/Spinner";
 import { isAxiosError } from "axios";
 import ErrorComponent from "../../../../components/Error";
+import { ACTION_TYPE } from "../../context/useExchangeInfo/actions";
 interface SymbolI {
   symbol: string;
   checked: boolean;
@@ -24,7 +25,7 @@ const Symbols = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const { setExchange } = useExchangeInfo();
+  const { exchanges, dispatchExchanges } = useExchangeInfo();
 
   const fetchSymbols = async () => {
     const symbols = await getSymbols();
@@ -72,11 +73,18 @@ const Symbols = () => {
   };
 
   const handleExchange = () => {
+    if (exchanges.currentList === "") {
+      alert("Please select a list");
+    }
+
     const listSymbols = [...symbols].filter(
       (symbol: any) => symbol.checked === true
     );
 
-    setExchange(listSymbols);
+    dispatchExchanges({
+      type: ACTION_TYPE.ADD_TO_LIST,
+      payload: listSymbols,
+    });
   };
 
   const handleSearch = (e: KeyboardEvent<HTMLInputElement>) => {
