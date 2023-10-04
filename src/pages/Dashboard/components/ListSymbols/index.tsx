@@ -49,6 +49,22 @@ const ListSymbols = () => {
 
   return (
     <S.Wrapper>
+      <S.WrapperOfListUser>
+        <S.WrapperNewList>
+          <S.SelectList name="cars" id="cars">
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="mercedes">Mercedes</option>
+            <option value="audi">Audi</option>
+          </S.SelectList>
+          <S.ButtonAddList>+</S.ButtonAddList>
+        </S.WrapperNewList>
+        <S.WrapperNewList>
+          <S.Field />
+          <S.Button value="Add" />
+        </S.WrapperNewList>
+      </S.WrapperOfListUser>
+
       <S.Table>
         <S.TableHead>
           <tr>
@@ -62,7 +78,7 @@ const ListSymbols = () => {
         <tbody>
           {Object.entries(exchangesInfo)?.map(([key, value]) => (
             <S.TableRow key={key}>
-              <S.SymbolCell>{value.s}</S.SymbolCell>
+              <td>{value.s}</td>
               <S.TableCell>{formatNumberToFixed(value.c)}</S.TableCell>
               <S.TableCell>{formatNumberToFixed(value.b)}</S.TableCell>
               <S.TableCell>{formatNumberToFixed(value.a)}</S.TableCell>

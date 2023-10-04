@@ -1,11 +1,16 @@
-import { ChangeEvent, useEffect, useState, KeyboardEvent } from "react";
+import {
+  ChangeEvent,
+  useEffect,
+  useState,
+  KeyboardEvent,
+  Suspense,
+} from "react";
 import * as S from "./styles";
 import { getSymbols } from "../../../../api/binance";
 import { useExchangeInfo } from "../../context/useExchangeInfo";
 import Spinner from "../../../../components/Spinner";
 import { isAxiosError } from "axios";
 import ErrorComponent from "../../../../components/Error";
-
 interface SymbolI {
   symbol: string;
   checked: boolean;
@@ -109,7 +114,7 @@ const Symbols = () => {
     <S.Wrapper>
       <S.Search
         type="search"
-        placeholder="Procurar..."
+        placeholder="Search..."
         onKeyDown={handleSearch}
       />
 
@@ -124,27 +129,29 @@ const Symbols = () => {
               Symbol
             </S.CoinSymbolHeader>
           </li>
-          {(symbolsFiltered.length > 0 ? symbolsFiltered : symbols)
-            ?.slice(0, 10)
-            .map((symbol, i) => {
-              return (
-                <li key={symbol.symbol}>
-                  <S.CoinSymbol
-                    isChecked={symbol?.checked}
-                    htmlFor={symbol.symbol}
-                  >
-                    <S.Checkbox
-                      id={symbol.symbol}
-                      checked={symbol?.checked}
-                      onChange={(e) => handleCheckboxChange(e, i)}
-                    />
-                    {symbol.symbol}
-                  </S.CoinSymbol>
-                </li>
-              );
-            })}
+          <Suspense fallback={<Spinner />}>
+            {(symbolsFiltered.length > 0 ? symbolsFiltered : symbols)
+              ?.slice(0, 10)
+              .map((symbol, i) => {
+                return (
+                  <li key={symbol.symbol}>
+                    <S.CoinSymbol
+                      isChecked={symbol?.checked}
+                      htmlFor={symbol.symbol}
+                    >
+                      <S.Checkbox
+                        id={symbol.symbol}
+                        checked={symbol?.checked}
+                        onChange={(e) => handleCheckboxChange(e, i)}
+                      />
+                      {symbol.symbol}
+                    </S.CoinSymbol>
+                  </li>
+                );
+              })}
+          </Suspense>
         </ul>
-        <S.Button value="Adicionar a lista" onClick={handleExchange} />
+        <S.Button value="Add to List" onClick={handleExchange} />
       </>
     </S.Wrapper>
   );

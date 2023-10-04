@@ -53,6 +53,11 @@ export const Checkbox = styled.input.attrs({ type: "checkbox" })`
 
 export const Button = styled.input.attrs({ type: "submit" })`
   width: 100%;
-  height: 32px;
+  height: 36px;
   border-radius: 8px;
+
+  &:hover {
+    background-color: var(--black);
+    color: var(--white);
+  }
 `;

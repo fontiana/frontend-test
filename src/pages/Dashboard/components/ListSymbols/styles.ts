@@ -16,6 +16,74 @@ export const Wrapper = styled.section`
   `}
 `;
 
+export const WrapperOfListUser = styled.section`
+  display: flex;
+  justify-content: space-between;
+  column-gap: 12px;
+
+  ${media.lessThan("tablet")`
+    flex-direction: column;
+  `}
+`;
+
+export const SelectList = styled.select`
+  width: 180px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  outline: none;
+  font-size: 16px;
+  margin-bottom: 12px;
+  background-color: var(--subtext-color);
+  color: var(--black);
+`;
+
+export const ButtonAddList = styled.button`
+  align-items: center;
+  justify-content: center;
+  background-color: var(--black);
+  border-radius: 8px;
+  color: var(--white);
+  column-gap: 8px;
+  display: flex;
+  height: 36px;
+  width: 36px;
+
+  &:hover {
+    background-color: var(--white);
+    color: var(--primary-color);
+  }
+`;
+
+export const WrapperNewList = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+export const Field = styled.input.attrs({ type: "text" })`
+  width: 180px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  outline: none;
+  font-size: 16px;
+  margin-bottom: 12px;
+  background-color: var(--subtext-color);
+  color: var(--black);
+`;
+
+export const Button = styled.input.attrs({ type: "submit" })`
+  width: 100%;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 8px;
+
+  &:hover {
+    background-color: var(--black);
+    color: var(--white);
+  }
+`;
+
 export const Table = styled.table`
   border-collapse: collapse;
   text-align: center;
@@ -58,5 +126,3 @@ export const TableCell = styled.td<{ isPositive?: number }>`
     return "inherit";
   }};
 `;
-
-export const SymbolCell = styled(TableCell)``;
