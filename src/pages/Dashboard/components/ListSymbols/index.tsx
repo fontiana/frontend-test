@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useExchangeInfo } from "../../context/useExchangeInfo";
 import * as S from "./styles";
 import useWebSocket from "react-use-websocket";
@@ -6,6 +6,7 @@ import useWebSocket from "react-use-websocket";
 interface WebSocketMessage {
   stream: string;
   data: any;
+  // TODO: increase more details about object WebSocketMessage
 }
 
 const ListSymbols = () => {
@@ -31,9 +32,20 @@ const ListSymbols = () => {
         }));
       }
     },
-    shouldReconnect: (closeEvent) => true,
-    reconnectInterval: 1000,
+    shouldReconnect: () => true,
+    reconnectInterval: 10,
   });
+
+  const formatNumberToFixed = useCallback(
+    (value: string, decimalPlaces: number = 4) => {
+      return parseFloat(value).toFixed(decimalPlaces);
+    },
+    []
+  );
+
+  const formatPercentage = useCallback((value: number) => {
+    return (value * 10000).toFixed(2);
+  }, []);
 
   return (
     <S.Wrapper>
@@ -51,10 +63,12 @@ const ListSymbols = () => {
           {Object.entries(exchangesInfo)?.map(([key, value]) => (
             <S.TableRow key={key}>
               <S.SymbolCell>{value.s}</S.SymbolCell>
-              <S.TableCell>{parseFloat(value.c).toFixed(4)}</S.TableCell>
-              <S.TableCell>{parseFloat(value.b).toFixed(4)}</S.TableCell>
-              <S.TableCell>{parseFloat(value.a).toFixed(4)}</S.TableCell>
-              <S.TableCell>{(value.p * 10000).toFixed(2)}</S.TableCell>
+              <S.TableCell>{formatNumberToFixed(value.c)}</S.TableCell>
+              <S.TableCell>{formatNumberToFixed(value.b)}</S.TableCell>
+              <S.TableCell>{formatNumberToFixed(value.a)}</S.TableCell>
+              <S.TableCell isPositive={parseFloat(value.p) * 10000}>
+                {formatPercentage(value.p)}
+              </S.TableCell>
             </S.TableRow>
           ))}
         </tbody>

@@ -9,6 +9,8 @@
   --error-color: #ff6347;
   --white: #fff;
   --black: #000;
+  --text-color-positive: #00cc99; /* Verde Claro */
+  --text-color-negative: #ff9999; /* Vermelho Claro */
 }
 
 body {

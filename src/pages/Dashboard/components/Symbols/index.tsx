@@ -7,7 +7,7 @@ import Spinner from "../../../../components/Spinner";
 interface SymbolI {
   symbol: string;
   checked: boolean;
-  // increase more details about object Symbol
+  // TODO: increase more details about object Symbol
 }
 
 const Symbols = () => {

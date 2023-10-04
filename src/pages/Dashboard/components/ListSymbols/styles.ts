@@ -40,11 +40,23 @@ export const TableRow = styled.tr`
   }
 `;
 
-export const TableCell = styled.td`
+export const TableCell = styled.td<{ isPositive?: number }>`
   padding: 18px 0;
   align-items: center;
-
   margin: 10px;
+
+  color: ${({ isPositive }) => {
+    const value = isPositive ?? 0;
+    if (value > 0) {
+      return "var(--text-color-positive)";
+    }
+
+    if (value < 0) {
+      return "var(--text-color-negative)";
+    }
+
+    return "inherit";
+  }};
 `;
 
 export const SymbolCell = styled(TableCell)``;
