@@ -1,25 +1,37 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState, KeyboardEvent } from "react";
 import * as S from "./styles";
 import { getSymbols } from "../../../../api/binance";
 import { useExchangeInfo } from "../../context/useExchangeInfo";
+import Spinner from "../../../../components/Spinner";
 
 interface SymbolI {
   symbol: string;
   checked: boolean;
+  // increase more details about object Symbol
 }
 
 const Symbols = () => {
   const [symbols, setSymbols] = useState([] as SymbolI[]);
+  const [symbolsFiltered, setSymbolsFiltered] = useState([] as SymbolI[]);
+
   const [isChecked, setIsChecked] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { setExchange } = useExchangeInfo();
 
-  useEffect(() => {
-    const fetchSymbols = async () => {
-      const symbols = await getSymbols();
-      setSymbols(symbols.symbols);
-    };
+  const fetchSymbols = async () => {
+    const symbols = await getSymbols();
+    setSymbols(symbols.symbols);
+  };
 
+  useEffect(() => {
     fetchSymbols();
+    setLoading(false);
+
+    return () => {
+      setSymbols([]);
+      setLoading(true);
+      setIsChecked(false);
+    };
   }, []);
 
   const handleCheckboxChange = (
@@ -58,35 +70,62 @@ const Symbols = () => {
     setExchange(listSymbols);
   };
 
+  const handleSearch = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      const symbolsFiltered = symbols.filter((symbol) =>
+        symbol.symbol.includes(
+          (e.target as HTMLInputElement).value.toUpperCase()
+        )
+      );
+
+      setSymbolsFiltered(symbolsFiltered);
+    }
+  };
+
   return (
     <S.Wrapper>
-      <S.Search type="search" placeholder="Procurar..." />
-      <ul>
-        <li>
-          <S.CoinSymbolHeader htmlFor="Symbol">
-            <S.Checkbox
-              checked={isChecked}
-              onChange={(e) => handleAllCheckboxChange(e)}
-            />
-            Symbol
-          </S.CoinSymbolHeader>
-        </li>
-        {symbols.slice(0, 10).map((symbol, i) => {
-          return (
-            <li key={symbol.symbol}>
-              <S.CoinSymbol isChecked={symbol?.checked} htmlFor={symbol.symbol}>
+      <S.Search
+        type="search"
+        placeholder="Procurar..."
+        onKeyDown={handleSearch}
+      />
+      {loading ? (
+        <Spinner message="Loading symbols..." />
+      ) : (
+        <>
+          <ul>
+            <li>
+              <S.CoinSymbolHeader htmlFor="Symbol">
                 <S.Checkbox
-                  id={symbol.symbol}
-                  checked={symbol?.checked}
-                  onChange={(e) => handleCheckboxChange(e, i)}
+                  checked={isChecked}
+                  onChange={(e) => handleAllCheckboxChange(e)}
                 />
-                {symbol.symbol}
-              </S.CoinSymbol>
+                Symbol
+              </S.CoinSymbolHeader>
             </li>
-          );
-        })}
-      </ul>
-      <S.Button value="Adicionar a lista" onClick={handleExchange} />
+            {(symbolsFiltered.length > 0 ? symbolsFiltered : symbols)
+              .slice(0, 10)
+              .map((symbol, i) => {
+                return (
+                  <li key={symbol.symbol}>
+                    <S.CoinSymbol
+                      isChecked={symbol?.checked}
+                      htmlFor={symbol.symbol}
+                    >
+                      <S.Checkbox
+                        id={symbol.symbol}
+                        checked={symbol?.checked}
+                        onChange={(e) => handleCheckboxChange(e, i)}
+                      />
+                      {symbol.symbol}
+                    </S.CoinSymbol>
+                  </li>
+                );
+              })}
+          </ul>
+          <S.Button value="Adicionar a lista" onClick={handleExchange} />
+        </>
+      )}
     </S.Wrapper>
   );
 };
