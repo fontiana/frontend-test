@@ -19,23 +19,27 @@ export const Wrapper = styled.section`
 export const WrapperOfListUser = styled.section`
   display: flex;
   justify-content: space-between;
-  column-gap: 12px;
 
   ${media.lessThan("tablet")`
     flex-direction: column;
+    row-gap: 12px;
   `}
 `;
 
 export const SelectList = styled.select`
   width: 180px;
+
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 16px;
   outline: none;
   font-size: 16px;
-  margin-bottom: 12px;
   background-color: var(--subtext-color);
   color: var(--black);
+
+  ${media.lessThan("tablet")`
+    max-width: 132px;
+`}
 `;
 
 export const ButtonAddList = styled.span`
@@ -47,7 +51,7 @@ export const ButtonAddList = styled.span`
   column-gap: 8px;
   display: flex;
   height: 36px;
-  width: 36px;
+  min-width: 36px;
 
   &:hover {
     background-color: var(--white);
@@ -57,6 +61,7 @@ export const ButtonAddList = styled.span`
 
 export const WrapperNewList = styled.div`
   display: flex;
+  align-items: center;
   gap: 8px;
 `;
 
@@ -67,7 +72,6 @@ export const Field = styled.input.attrs({ type: "text" })`
   border-radius: 16px;
   outline: none;
   font-size: 16px;
-  margin-bottom: 12px;
   background-color: var(--subtext-color);
   color: var(--black);
 `;
