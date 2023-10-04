@@ -7,7 +7,6 @@ export const Wrapper = styled.section`
   border-radius: 16px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
   padding: 12px 24px;
 `;
 
@@ -52,6 +51,7 @@ export const Button = styled.input.attrs({ type: "submit" })`
   width: 100%;
   height: 36px;
   border-radius: 8px;
+  margin-top: 24px;
 
   &:hover {
     background-color: var(--black);
