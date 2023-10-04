@@ -34,13 +34,10 @@ export const CoinSymbolHeader = styled.label`
   border-radius: 8px;
 `;
 
-export const CoinSymbol = styled.label<{ isChecked: boolean }>`
+export const CoinSymbol = styled.label`
   display: flex;
   align-items: center;
-  background-color: ${({ isChecked }) =>
-    isChecked ? "var(--secondary-color)" : "inherit"};
-  color: ${({ isChecked }) => (isChecked ? "var(--primary-color)" : "inherit")};
-  font-weight: ${({ isChecked }) => (isChecked ? 700 : "inherit")};
+
   height: 32px;
   column-gap: 8px;
   padding-left: 12px;

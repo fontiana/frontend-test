@@ -12,6 +12,8 @@ import Spinner from "../../../../components/Spinner";
 import { isAxiosError } from "axios";
 import ErrorComponent from "../../../../components/Error";
 import { ACTION_TYPE } from "../../context/useExchangeInfo/actions";
+import { useForm } from "react-hook-form";
+
 interface SymbolI {
   symbol: string;
   checked: boolean;
@@ -21,10 +23,9 @@ interface SymbolI {
 const Symbols = () => {
   const [symbols, setSymbols] = useState([] as SymbolI[]);
   const [symbolsFiltered, setSymbolsFiltered] = useState([] as SymbolI[]);
-
-  const [isChecked, setIsChecked] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const { register, handleSubmit, control, setValue, getValues } = useForm();
   const { exchanges, dispatchExchanges } = useExchangeInfo();
 
   const fetchSymbols = async () => {
@@ -40,50 +41,16 @@ const Symbols = () => {
     return () => {
       setSymbols([]);
       setLoading(true);
-      setIsChecked(false);
     };
   }, []);
 
-  const handleCheckboxChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    i: number
-  ) => {
-    setSymbols((prevSymbols) => {
-      const updatedSymbols = [...prevSymbols];
-      updatedSymbols[i] = {
-        ...updatedSymbols[i],
-        checked: e.target.checked,
-      };
-
-      return updatedSymbols;
-    });
-  };
-
   const handleAllCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSymbols((prevSymbols) => {
-      const updatedSymbols = [...prevSymbols].map((symbol) => ({
-        ...symbol,
-        checked: e.target.checked,
-      }));
+    const allFields = Object.keys(control._fields);
 
-      return updatedSymbols;
-    });
+    const inputSelectAll = getValues("selectAll");
 
-    setIsChecked(e.target.checked);
-  };
-
-  const handleExchange = () => {
-    if (exchanges.currentList === "") {
-      alert("Please select a list");
-    }
-
-    const listSymbols = [...symbols].filter(
-      (symbol: any) => symbol.checked === true
-    );
-
-    dispatchExchanges({
-      type: ACTION_TYPE.ADD_TO_LIST,
-      payload: listSymbols,
+    allFields.forEach((field) => {
+      setValue(field, !inputSelectAll);
     });
   };
 
@@ -97,6 +64,21 @@ const Symbols = () => {
 
       setSymbolsFiltered(symbolsFiltered);
     }
+  };
+
+  const onSubmit = (data: any) => {
+    if (exchanges.currentList === "") {
+      alert("Please select a list");
+    }
+
+    const listSymbols = Object.entries(data)
+      .filter(([key, value]) => value === true)
+      .map(([key, value]) => key);
+
+    dispatchExchanges({
+      type: ACTION_TYPE.ADD_TO_LIST,
+      payload: listSymbols,
+    });
   };
 
   if (isAxiosError(symbols)) {
@@ -118,6 +100,8 @@ const Symbols = () => {
     );
   }
 
+  console.log("re-rendering");
+
   return (
     <S.Wrapper>
       <S.Search
@@ -125,14 +109,13 @@ const Symbols = () => {
         placeholder="Search..."
         onKeyDown={handleSearch}
       />
-
-      <>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <ul>
           <li>
             <S.CoinSymbolHeader htmlFor="Symbol">
               <S.Checkbox
-                checked={isChecked}
-                onChange={(e) => handleAllCheckboxChange(e)}
+                {...register("selectAll")}
+                onChange={handleAllCheckboxChange}
               />
               Symbol
             </S.CoinSymbolHeader>
@@ -143,14 +126,10 @@ const Symbols = () => {
               .map((symbol, i) => {
                 return (
                   <li key={symbol.symbol}>
-                    <S.CoinSymbol
-                      isChecked={symbol?.checked}
-                      htmlFor={symbol.symbol}
-                    >
+                    <S.CoinSymbol htmlFor={symbol.symbol}>
                       <S.Checkbox
                         id={symbol.symbol}
-                        checked={symbol?.checked}
-                        onChange={(e) => handleCheckboxChange(e, i)}
+                        {...register(symbol.symbol)}
                       />
                       {symbol.symbol}
                     </S.CoinSymbol>
@@ -159,8 +138,8 @@ const Symbols = () => {
               })}
           </Suspense>
         </ul>
-        <S.Button value="Add to List" onClick={handleExchange} />
-      </>
+        <S.Button value="Add to List" />
+      </form>
     </S.Wrapper>
   );
 };

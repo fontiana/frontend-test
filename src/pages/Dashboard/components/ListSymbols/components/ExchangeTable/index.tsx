@@ -17,7 +17,7 @@ const ExchangeTable = () => {
   const symbolList =
     exchanges.currentList !== "" &&
     Object.values(exchanges.lists[exchanges.currentList])
-      ?.map((symbol: any) => symbol.symbol.toLowerCase())
+      ?.map((symbol: any) => symbol.toLowerCase())
       .join("@ticker/");
 
   const wsUrl = `wss://stream.binance.com:9443/stream?streams=${symbolList}`;
