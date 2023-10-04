@@ -30,7 +30,7 @@ const Symbols = () => {
 
   const fetchSymbols = async () => {
     const symbols = await getSymbols();
-    setSymbols(symbols.symbols ?? symbols);
+    setSymbols(symbols);
   };
 
   useEffect(() => {
