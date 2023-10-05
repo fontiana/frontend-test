@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
 export const DropdownContainer = styled.div`
-  position: relative;
-  display: inline-block;
+  margin-bottom: 20px;
 `;
 
 export const Select = styled.select`
   padding: 10px;
+  width: 200px;
 `;
 
 export const Option = styled.option`
@@ -15,6 +15,7 @@ export const Option = styled.option`
 `;
 
 export const SelectActive = styled(Select)`
+padding: 10px;
   background-color: #f5f5f5;
 `;
 
@@ -25,6 +26,7 @@ export const CustomTable = styled.table`
   background-color: #fff;
   border: 1px solid #ddd;
   font-size: 16px;
+  table-layout: fixed;
 `;
 
 export const TableHead = styled.thead`

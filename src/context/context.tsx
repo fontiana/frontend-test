@@ -4,7 +4,7 @@ interface SymbolContextType {
   symbolContext: { symbol: string }[];
   setSymbolContext: (symbols: { symbol: string }[]) => void;
   symbolsList: any[];
-  setSymbolsList: ([]) => void;
+  setSymbolsList: (list: any) => void;
 }
 
 const SymbolContext = createContext<SymbolContextType | undefined>(undefined);

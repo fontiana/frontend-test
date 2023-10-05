@@ -8,15 +8,11 @@ const Dashboard: React.FC = () => {
   const [symbolData, setSymbolData] = useState<ISymbol[]>([]);
   const [listNames, setListNames] = useState<string[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedListIndex, setSelectedListIndex] = useState<number>(0);
 
-  const handleSelectChange = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const BASE_URL = `wss://stream.binance.com:9443/stream?streams=`;
-
-  const url = BASE_URL + symbolContext.map((symbol) =>
-    `${symbol.symbol.toLowerCase()}@ticker`).join('/')
+  const websocketUrl = `wss://stream.binance.com:9443/stream?streams=`;
+  const url = websocketUrl + symbolContext.map((symbol) =>
+    `${symbol.symbol.toLowerCase()}@ticker`).join('/');
 
   useEffect(() => {
     const socket = new WebSocket(url);
@@ -30,11 +26,11 @@ const Dashboard: React.FC = () => {
         priceChangePercent: data.P
       };
 
-      setSymbolData((prevData) => {
-        const updatedData = [...prevData];
-        const existingSymbolIndex = updatedData.findIndex((item) => item.symbol === data.s);
-        if (existingSymbolIndex !== -1) {
-          updatedData[existingSymbolIndex] = newSymbolData;
+      setSymbolData((symbolData) => {
+        const updatedData = [...symbolData];
+        const existingSymbol = updatedData.findIndex((item) => item.symbol === data.s);
+        if (existingSymbol !== -1) {
+          updatedData[existingSymbol] = newSymbolData;
         } else {
           updatedData.push(newSymbolData);
         }
@@ -48,8 +44,7 @@ const Dashboard: React.FC = () => {
 
   const handleListSelection = (listName: string) => {
     const selectedListIndex = listNames.indexOf(listName);
-    const selectedList = symbolsList[selectedListIndex];
-    setSymbolsList(selectedList);
+    setSelectedListIndex(selectedListIndex);
   };
 
   return (
@@ -63,7 +58,7 @@ const Dashboard: React.FC = () => {
           </S.SelectActive>
         ) : (
           <S.Select onChange={(e) => handleListSelection(e.target.value)}>
-            {symbolsList.map((list, index) => (
+            {symbolsList.map((_, index) => (
               <S.Option key={index} value={`List ${index + 1}`}>{`List ${index + 1}`}</S.Option>
             ))}
           </S.Select>

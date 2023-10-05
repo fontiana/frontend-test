@@ -8,6 +8,7 @@ const ListSymbol: React.FC = () => {
     useSymbolContext();
   const [symbols, setSymbols] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSymbols, setSelectedSymbols] = useState<string[]>([]);
 
   const fetchSymbolData = async () => {
     try {
@@ -21,19 +22,16 @@ const ListSymbol: React.FC = () => {
   };
 
   const handleCheckboxChange = (symbol: any) => {
-    const isSymbolSelected = symbolContext.some(
-      (selectedSymbol) => selectedSymbol.symbol === symbol.symbol
-    );
+    const isSymbolSelected = selectedSymbols.includes(symbol.symbol);
 
     if (isSymbolSelected) {
-      setSymbolContext(
-        symbolContext.filter(
-          (selectedSymbol) => selectedSymbol.symbol !== symbol.symbol
-        )
+      setSelectedSymbols((symbolsChecked) =>
+        symbolsChecked.filter((selectedSymbol) => selectedSymbol !== symbol.symbol)
       );
     } else {
-      setSymbolContext([...symbolContext, symbol]);
+      setSelectedSymbols((symbolsChecked) => [...symbolsChecked, symbol.symbol]);
     }
+    setSymbolContext([...symbolContext, symbol]);
   };
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,15 +39,9 @@ const ListSymbol: React.FC = () => {
   };
 
   const createSymbolsList = () => {
-    const selectedSymbols = symbols.filter((symbol) => {
-      return symbolContext.some(
-        (selectedSymbol) => selectedSymbol.symbol === symbol.symbol
-      );
-    });
-
-    if (selectedSymbols.length > 0) {
-      setSymbolsList([...symbolContext, ...selectedSymbols]);
-    }
+    const newList = [...symbolContext, ...selectedSymbols];
+    setSelectedSymbols([]);
+    setSymbolsList((list: any) => [...list, newList]);
   };
 
   useEffect(() => {
@@ -76,6 +68,7 @@ const ListSymbol: React.FC = () => {
           <CheckboxLabel key={symbol.symbol}>
             <input
               type="checkbox"
+              checked={selectedSymbols.includes(symbol.symbol)}
               onChange={() => handleCheckboxChange(symbol)}
             />
             {symbol.symbol}
