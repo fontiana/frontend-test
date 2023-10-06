@@ -2,21 +2,49 @@ import { useState, useCallback, useEffect } from "react";
 import * as S from "../../styles";
 import useWebSocket from "react-use-websocket";
 import { useExchangeInfo } from "../../../../context/useExchangeInfo";
-import { SymbolInfoI, ExchangeInfoI } from "../../../../types";
+
+interface SymbolInfoI {
+  A: string;
+  B: string;
+  C: number;
+  E: number;
+  F: number;
+  L: number;
+  O: number;
+  P: string;
+  Q: string;
+  a: string;
+  b: string;
+  c: string;
+  e: string;
+  h: string;
+  l: string;
+  n: number;
+  o: string;
+  p: string;
+  q: string;
+  s: string;
+  v: string;
+  w: string;
+  x: string;
+}
 
 interface WebSocketMessage {
   stream: string;
   data: SymbolInfoI;
 }
+interface ExchangesInfoI {
+  [key: string]: SymbolInfoI;
+}
 
 const ExchangeTable = () => {
-  const [exchangesInfo, setExchangesInfo] = useState<ExchangeInfoI>({});
+  const [exchangesInfo, setExchangesInfo] = useState<ExchangesInfoI>({});
 
   const { exchanges } = useExchangeInfo();
 
   const symbolList =
-    exchanges.currentList !== "" &&
-    Object.values(exchanges.lists[exchanges.currentList])
+    exchanges.currentList &&
+    Object.values((exchanges.lists as ExchangesInfoI)[exchanges.currentList])
       ?.map((symbol: string) => symbol.toLowerCase())
       .join("@ticker/");
 

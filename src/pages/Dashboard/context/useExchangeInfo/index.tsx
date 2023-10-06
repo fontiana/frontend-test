@@ -11,7 +11,7 @@ type ActionI = {
 interface SymbolContextI {
   exchanges: {
     currentList: string;
-    lists: ExchangeInfoI;
+    lists: ExchangeInfoI | {};
   };
   dispatchExchanges: React.Dispatch<ActionI>;
 }
