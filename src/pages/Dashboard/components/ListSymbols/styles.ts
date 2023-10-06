@@ -52,6 +52,7 @@ export const ButtonAddList = styled.span`
   display: flex;
   height: 36px;
   min-width: 36px;
+  cursor: pointer;
 
   &:hover {
     background-color: var(--white);
@@ -81,6 +82,7 @@ export const Button = styled.input.attrs({ type: "submit" })`
   min-width: 36px;
   height: 36px;
   border-radius: 8px;
+  cursor: pointer;
 
   &:hover {
     background-color: var(--black);

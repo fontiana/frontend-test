@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Wrapper = styled.section`
+export const Wrapper = styled.aside`
   border: 2px solid var(--primary-color);
   min-width: 220px;
   background-color: rgba(30, 65, 71, 0.5);
@@ -52,6 +52,7 @@ export const Button = styled.input.attrs({ type: "submit" })`
   height: 36px;
   border-radius: 8px;
   margin-top: 24px;
+  cursor: pointer;
 
   &:hover {
     background-color: var(--black);
