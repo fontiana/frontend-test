@@ -2,12 +2,12 @@ import { render, screen } from "@testing-library/react";
 import { ExchangeInfoProvider, useExchangeInfo } from ".";
 
 const MockComponent = () => {
-  const exchanges = useExchangeInfo();
+  useExchangeInfo();
 
   return <div data-testid="component-test" />;
 };
 
-test("ExchangeInfoProvider provides context correctly", () => {
+test("should ExchangeInfoProvider provides context correctly", () => {
   render(
     <ExchangeInfoProvider>
       <MockComponent />
@@ -17,7 +17,7 @@ test("ExchangeInfoProvider provides context correctly", () => {
   expect(screen.getByTestId("component-test")).toBeInTheDocument();
 });
 
-test("useExchangeInfo throws error outside of ExchangeInfoProvider", () => {
+test("should useExchangeInfo throws error outside of ExchangeInfoProvider", () => {
   const consoleErrorSpy = jest.spyOn(console, "error");
   consoleErrorSpy.mockImplementation(() => {});
 
