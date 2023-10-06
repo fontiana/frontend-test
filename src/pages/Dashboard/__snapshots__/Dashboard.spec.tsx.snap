@@ -1,102 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dashboard renders correctly 1`] = `
-<main
-  className="sc-dJGLgI eNSlAv"
->
-  <aside
-    className="sc-irLvoH KLyOf"
-  >
-    <section
-      className="sc-fmKFmJ jalVDq"
-      data-testid="dashboard__spinner"
-    >
-      <div
-        className="sc-fHekAb dsiVxd"
-      />
-      <h1>
-        Loading symbols...
-      </h1>
-    </section>
-  </aside>
-  <section
-    className="sc-beyTiQ jeLTOA"
-  >
-    <section
-      className="sc-guDMob gxxYoy"
-    >
-      <div
-        className="sc-eDLKEg ilpPtz"
-      >
-        <label
-          htmlFor="listOfExchanges"
-        >
-          Select a list:
-        </label>
-        <select
-          className="sc-dmyDmy ifWSDO"
-          id="listOfExchanges"
-          onChange={[Function]}
-          value=""
-        />
-        <span
-          className="sc-hLQTFJ lliFRa"
-          onClick={[Function]}
-        >
-          +
-        </span>
-      </div>
-    </section>
-    <table
-      className="sc-iBdoyZ dvrDvo"
-    >
-      <thead
-        className="sc-fsYfxw iwuMRD"
-      >
-        <tr>
-          <th
-            className="sc-qZruQ blByuq"
-          >
-            Symbol
-          </th>
-          <th
-            className="sc-qZruQ blByuq"
-          >
-            Last Price
-          </th>
-          <th
-            className="sc-qZruQ blByuq"
-          >
-            Bid Price
-          </th>
-          <th
-            className="sc-qZruQ blByuq"
-          >
-            Ask Price
-          </th>
-          <th
-            className="sc-qZruQ blByuq"
-          >
-            Price Change (%)
-          </th>
-        </tr>
-      </thead>
-      <tbody />
-    </table>
-  </section>
-</main>
-`;
-
 exports[`Dashboard should render correctly 1`] = `
 <main
   className="sc-dJGLgI eNSlAv"
 >
-  <aside
+  <section
     className="sc-irLvoH KLyOf"
   >
     <section
       className="sc-fmKFmJ jalVDq"
-      data-testid="dashboard__spinner"
+      data-testid="undefined__spinner"
     >
       <div
         className="sc-fHekAb dsiVxd"
@@ -105,7 +18,7 @@ exports[`Dashboard should render correctly 1`] = `
         Loading symbols...
       </h1>
     </section>
-  </aside>
+  </section>
   <section
     className="sc-beyTiQ jeLTOA"
   >

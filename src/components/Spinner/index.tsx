@@ -1,7 +1,7 @@
 import * as S from "./styles";
 
 interface SpinnerI {
-  page: string;
+  page?: string;
   message?: string;
 }
 

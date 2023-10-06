@@ -13,12 +13,11 @@ import { isAxiosError } from "axios";
 import ErrorComponent from "../../../../components/Error";
 import { ACTION_TYPE } from "../../context/useExchangeInfo/actions";
 import { useForm } from "react-hook-form";
+import { PAGES } from "../../../../utils/pages";
 
 interface SymbolI {
   symbol: string;
-  checked: boolean;
-  // TODO: increase more details about object Symbol
-  // Need defined rule to show symbols list
+  // TODO: Need define rule to show symbols list
 }
 
 const Symbols = () => {
@@ -68,19 +67,27 @@ const Symbols = () => {
   };
 
   const onSubmit = (data: object) => {
-    if (exchanges.currentList === "") {
+    if (!exchanges.currentList) {
       alert("Please select a list");
+    } else {
+      const listSymbols = Object.entries(data)
+        .filter(([key, value]) => value === true && key !== "selectAll")
+        .map(([key]) => key);
+
+      dispatchExchanges({
+        type: ACTION_TYPE.ADD_TO_LIST,
+        payload: listSymbols,
+      });
     }
-
-    const listSymbols = Object.entries(data)
-      .filter(([_, value]) => value === true)
-      .map(([key]) => key);
-
-    dispatchExchanges({
-      type: ACTION_TYPE.ADD_TO_LIST,
-      payload: listSymbols,
-    });
   };
+
+  if (loading) {
+    return (
+      <S.Wrapper>
+        <Spinner message="Loading symbols..." />
+      </S.Wrapper>
+    );
+  }
 
   if (isAxiosError(symbols)) {
     return (
@@ -93,16 +100,6 @@ const Symbols = () => {
     );
   }
 
-  if (loading) {
-    return (
-      <S.Wrapper>
-        <Spinner message="Loading symbols..." />
-      </S.Wrapper>
-    );
-  }
-
-  console.log("re-rendering");
-
   return (
     <S.Wrapper>
       <S.Search
@@ -113,8 +110,9 @@ const Symbols = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <ul>
           <li>
-            <S.CoinSymbolHeader htmlFor="Symbol">
+            <S.CoinSymbolHeader htmlFor="selectAll">
               <S.Checkbox
+                data-testid={`${PAGES.DASHBOARD}__input-checkbox--symbol`}
                 {...register("selectAll")}
                 onChange={handleAllCheckboxChange}
               />
