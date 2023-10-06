@@ -1,68 +1,65 @@
 import React, { useEffect, useState } from 'react';
 import { useSymbolContext } from '../../context/context';
-import { ISymbol } from '../../models/symbol';
 import * as S from './styles';
 
 const Dashboard: React.FC = () => {
-  const { symbolContext, symbolsList, setSymbolsList } = useSymbolContext();
-  const [symbolData, setSymbolData] = useState<ISymbol[]>([]);
-  const [listNames, setListNames] = useState<string[]>([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { symbolsList } = useSymbolContext();
+  const [symbolData, setSymbolData] = useState<any[]>([]);
   const [selectedListIndex, setSelectedListIndex] = useState<number>(0);
 
-  const websocketUrl = `wss://stream.binance.com:9443/stream?streams=`;
-  const url = websocketUrl + symbolContext.map((symbol) =>
-    `${symbol.symbol.toLowerCase()}@ticker`).join('/');
-
   useEffect(() => {
-    const socket = new WebSocket(url);
-    socket.onmessage = (event) => {
-      const { data } = JSON.parse(event.data);
-      const newSymbolData = {
-        symbol: data.s,
-        lastPrice: data.c,
-        bestBidPrice: data.b,
-        bestAskPrice: data.a,
-        priceChangePercent: data.P
+    const selectedList = symbolsList[selectedListIndex];
+
+    if (selectedList) {
+      const selectedSymbols = selectedList[`List ${selectedListIndex + 1}`];
+
+      const websocketUrl = `wss://stream.binance.com:9443/stream?streams=${selectedSymbols
+        .map((symbol: any) => `${symbol.symbol.toLowerCase()}@ticker`)
+        .join('/')}`;
+
+      const socket = new WebSocket(websocketUrl);
+      socket.onmessage = (event) => {
+        const { data } = JSON.parse(event.data);
+        const newSymbolData = {
+          symbol: data.s,
+          lastPrice: data.c,
+          bestBidPrice: data.b,
+          bestAskPrice: data.a,
+          priceChangePercent: data.P,
+        };
+
+        setSymbolData((symbolData) => {
+          const updatedData = [...symbolData];
+          const existingSymbol = updatedData.findIndex((item) => item.symbol === data.s);
+          if (existingSymbol !== -1) {
+            updatedData[existingSymbol] = newSymbolData;
+          } else {
+            updatedData.push(newSymbolData);
+          }
+          return updatedData;
+        });
       };
-
-      setSymbolData((symbolData) => {
-        const updatedData = [...symbolData];
-        const existingSymbol = updatedData.findIndex((item) => item.symbol === data.s);
-        if (existingSymbol !== -1) {
-          updatedData[existingSymbol] = newSymbolData;
-        } else {
-          updatedData.push(newSymbolData);
-        }
-        return updatedData;
-      });
     }
-
-    const names = symbolContext.map((_, index) => `List ${index + 1}`);
-    setListNames(names);
-  }, [url, symbolContext]);
+  }, [symbolsList, selectedListIndex]);
 
   const handleListSelection = (listName: string) => {
-    const selectedListIndex = listNames.indexOf(listName);
+    const selectedListIndex = symbolsList.findIndex((listObject) => listObject[listName]);
     setSelectedListIndex(selectedListIndex);
   };
 
   return (
     <div>
       <S.DropdownContainer>
-        {isDropdownOpen ? (
-          <S.SelectActive onChange={(e) => handleListSelection(e.target.value)}>
-            {symbolsList.map((index) => (
-              <S.Option key={index} value={`List ${index + 1}`}>{`List ${index + 1}`}</S.Option>
-            ))}
-          </S.SelectActive>
-        ) : (
-          <S.Select onChange={(e) => handleListSelection(e.target.value)}>
-            {symbolsList.map((_, index) => (
-              <S.Option key={index} value={`List ${index + 1}`}>{`List ${index + 1}`}</S.Option>
-            ))}
-          </S.Select>
-        )}
+        <S.SelectActive onChange={(e) => handleListSelection(e.target.value)}>
+          {symbolsList.map((listObject, index) => {
+            const key = Object.keys(listObject)[0];
+            return (
+              <S.Option key={key} value={`List ${index + 1}`}>
+                {`List ${index + 1}`}
+              </S.Option>
+            );
+          })}
+        </S.SelectActive>
       </S.DropdownContainer>
       <S.CustomTable>
         <S.TableHead>
