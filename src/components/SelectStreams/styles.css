@@ -1,0 +1,156 @@
+.select-symbols-container {
+    width: calc(100% - 48px);
+    height: calc(100% - 48px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 16px;
+    box-shadow: 0px 2px 4px 4px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+}
+
+.select-symbols-container .select-symbols-top-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.select-symbols-container .select-symbols-top-container .search-container {
+    width: calc(100% - 32px);
+    height: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #D3D3D3;
+    border-radius: 8px;
+    padding: 0px 16px;
+    margin: 0px 0px 12px;
+}
+
+.select-symbols-container .select-symbols-top-container .search-container .input-search {
+    width: calc(100% - 24px);
+    height: 100%;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 32px;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+.select-symbols-container .select-symbols-top-container .search-container .search-button {
+    width: 24px;
+    height: 24px;
+    background: url(../../../public/images/search-icon.svg) no-repeat center center;
+    border: none;
+    cursor: pointer;
+}
+
+.select-symbols-container .select-symbols-top-container .stream-list-to-select {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #D3D3D3;
+    overflow: auto;
+    padding: 0px;
+    margin: 0px 0px 12px;
+}
+
+.select-symbols-container .select-symbols-top-container .stream-list-to-select .stream-list-to-select-header {
+    width: calc(100% - 52px);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    background: #D3D3D3;
+    padding-left: 52px;
+}
+
+.select-symbols-container .select-symbols-top-container .stream-list-to-select .stream-item {
+    width: 100%;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    list-style: none;
+}
+
+.select-symbols-container .select-symbols-top-container .stream-list-to-select .stream-item .label-stream {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 52px;
+    cursor: pointer;
+}
+
+.select-symbols-container .select-symbols-top-container .stream-list-to-select .stream-item .label-stream .input-stream-checkbox {
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.select-symbols-container .select-symbols-top-container .stream-list-to-select .stream-item .label-stream .checkmark {
+    position: absolute;
+    top: calc(50% - 12px);
+    left: 16px;
+    width: 24px;
+    height: 24px;
+    background-color: #FFFFFF;
+    border: 1px solid #D3D3D3;
+    border-radius: 8px;
+}
+
+.select-symbols-container .select-symbols-top-container .stream-list-to-select .stream-item .label-stream .input-stream-checkbox:checked~.checkmark {
+    background-color: #00C4CC;
+    border: 1px solid #00C4CC;
+}
+
+.select-symbols-container .select-symbols-top-container .stream-list-to-select .stream-item .label-stream .checkmark::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    width: 5px;
+    height: 10px;
+    display: none;
+    border: solid #000000;
+    border-width: 0px 3px 3px 0px;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.select-symbols-container .select-symbols-top-container .stream-list-to-select .stream-item .label-stream .input-stream-checkbox:checked~.checkmark::after {
+    display: block;
+}
+
+.select-symbols-container .add-symbols-to-list-button {
+    width: 100%;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #00C4CC;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+}
+
+@media (min-width: 1024px) {
+    .select-symbols-container {
+        width: 28vw;
+        height: calc(100vh - 96px);
+    }
+
+    .select-symbols-container .select-symbols-top-container .stream-list-to-select {
+        max-height: 408px;
+    }
+}

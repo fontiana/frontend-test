@@ -1,0 +1,15 @@
+.app {
+  width: calc(100vw - 48px);
+  min-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+}
+
+@media (min-width: 1024px) {
+  .app {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
