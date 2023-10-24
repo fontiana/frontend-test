@@ -10,6 +10,7 @@ import {
   addSymbols,
   clearSymbols,
 } from "@/reducers/symbolsListSlice";
+import { api } from "@/services/api";
 import { ExchangeType } from "@/types/exchange";
 import {
   Autocomplete,
@@ -18,7 +19,6 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -71,8 +71,8 @@ export default function SymbolsList() {
     dispatch(clearSymbols());
     const controller = new AbortController();
     const fetchData = async () => {
-      await axios
-        .get<ExchangeType>(process.env.URL_EXCHANGE_INFO || "")
+      await api
+        .get<ExchangeType>("/exchangeInfo")
         .then((response) => {
           const symbols = response.data.symbols;
           const symbolsList = symbols.map(({ symbol }, index) => {

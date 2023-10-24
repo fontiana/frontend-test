@@ -1,12 +1,20 @@
+import {
+  deleteSymbolsList,
+  groupsFirstOption,
+  groupsInput,
+  groupsSecondOption,
+  saveInput,
+} from "../selectors/groupsList.css";
+
 export const createGroupList = (listName: string) => {
-  cy.get("input").get("#symbolsGroupListInput").type(`${listName}{enter}`);
-  cy.get("input").get("#saveSymbolsList").click();
+  cy.get("input").get(groupsInput).type(`${listName}{enter}`);
+  cy.get("input").get(saveInput).click();
   groupListCheck(listName);
 };
 
 export const groupListCheck = (listName: string) => {
   cy.get("input")
-    .get("#symbolsGroupListInput")
+    .get(groupsInput)
     .should("have.value", listName)
     .should("be.visible");
 };
@@ -33,9 +41,7 @@ describe("Validate groups list", () => {
   });
 
   it("Is canceling a list creation", () => {
-    cy.get("input")
-      .get("#symbolsGroupListInput")
-      .type("My first symbols list{enter}");
+    cy.get("input").get(groupsInput).type("My first symbols list{enter}");
     cy.get("input").get("#cancelSymbolsList").click();
     groupListCheck("");
   });
@@ -45,13 +51,13 @@ describe("Validate groups list", () => {
   });
 
   it("Is saving list on selecting on a dropdown", () => {
-    cy.get("input").get("#symbolsGroupListInput").type("My first symbols list");
+    cy.get("input").get(groupsInput).type("My first symbols list");
     cy.get("li")
-      .get("#symbolsGroupListInput-option-0")
+      .get(groupsFirstOption)
       .should("contain.text", "My first symbols list")
       .should("be.visible")
       .click();
-    cy.get("input").get("#saveSymbolsList").click();
+    cy.get("input").get(saveInput).click();
     groupListCheck("My first symbols list");
   });
 
@@ -63,14 +69,14 @@ describe("Validate groups list", () => {
 
   it("Is deleting a list", () => {
     createGroupList("My first symbols list");
-    cy.get("#deleteSymbolsList").should("be.visible").click();
+    cy.get(deleteSymbolsList).should("be.visible").click();
 
     groupListCheck("");
 
-    cy.get("input").get("#symbolsGroupListInput").focus();
+    cy.get("input").get(groupsInput).focus();
 
-    cy.get("li").get("#symbolsGroupListInput-option-0").should("not.exist");
-    cy.get("input").get("#symbolsGroupListInput").blur();
+    cy.get("li").get(groupsFirstOption).should("not.exist");
+    cy.get("input").get(groupsInput).blur();
   });
 
   it("Is filtering a list", () => {
@@ -79,15 +85,15 @@ describe("Validate groups list", () => {
     createGroupList("My second symbols list");
     unselectGroupList();
 
-    cy.get("input").get("#symbolsGroupListInput").type("My first");
+    cy.get("input").get(groupsInput).type("My first");
 
     cy.get("li")
-      .get("#symbolsGroupListInput-option-0")
+      .get(groupsFirstOption)
       .should("contain.text", "My first symbols list")
       .should("be.visible");
 
     cy.get("li")
-      .get("#symbolsGroupListInput-option-1")
+      .get(groupsSecondOption)
       .should("contain.text", 'Add "My first"')
       .should("be.visible");
   });

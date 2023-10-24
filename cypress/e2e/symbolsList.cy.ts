@@ -1,8 +1,27 @@
-import { createGroupList } from "./groupsList.cy";
+import { groupsInput, saveInput } from "../selectors/groupsList.css";
+import {
+  symbolFirstOption,
+  symbolSecondOption,
+  symbolThirdOption,
+  symbolsInput,
+} from "../selectors/symbolsList.css";
 
-export const selectSymbol = (index: number) => {
+const createGroupList = (listName: string) => {
+  cy.get("input").get(groupsInput).type(`${listName}{enter}`);
+  cy.get("input").get(saveInput).click();
+  groupListCheck(listName);
+};
+
+const groupListCheck = (listName: string) => {
   cy.get("input")
-    .get("#symbolsListInput")
+    .get(groupsInput)
+    .should("have.value", listName)
+    .should("be.visible");
+};
+
+const selectSymbol = (index: number) => {
+  cy.get("input")
+    .get(symbolsInput)
     .should("have.value", "")
     .should("be.visible")
     .click();
@@ -16,9 +35,9 @@ export const selectSymbol = (index: number) => {
     });
 };
 
-export const symbolsListCheck = () => {
+const symbolsListCheck = () => {
   cy.get("input")
-    .get("#symbolsListInput")
+    .get(symbolsInput)
     .should("have.value", "")
     .should("be.visible")
     .click();
@@ -41,7 +60,7 @@ describe("Validate symbols list", () => {
 
   it("Can not add symbols without a list", () => {
     cy.get("input")
-      .get("#symbolsListInput")
+      .get(symbolsInput)
       .should("be.visible")
       .should("have.value", "")
       .should("be.disabled");
@@ -52,9 +71,9 @@ describe("Validate symbols list", () => {
 
     symbolsListCheck();
 
-    cy.get("#symbolsListInput-option-0").should("be.visible");
-    cy.get("#symbolsListInput-option-1").should("be.visible");
-    cy.get("#symbolsListInput-option-2").should("be.visible");
+    cy.get(symbolFirstOption).should("be.visible");
+    cy.get(symbolSecondOption).should("be.visible");
+    cy.get(symbolThirdOption).should("be.visible");
   });
 
   it("Is adding symbol", () => {
@@ -67,7 +86,7 @@ describe("Validate symbols list", () => {
 
     symbolsListCheck();
 
-    cy.get("#symbolsListInput-option-0")
+    cy.get(symbolFirstOption)
       .click()
       .then(($option) => {
         cy.get("span")
@@ -89,7 +108,7 @@ describe("Validate symbols list", () => {
 
     symbolsListCheck();
 
-    cy.get("#symbolsListInput-option-0")
+    cy.get(symbolFirstOption)
       .click()
       .then(($option) => {
         cy.get("span")
@@ -98,7 +117,7 @@ describe("Validate symbols list", () => {
           .should("be.visible");
 
         cy.get("input")
-          .get("#symbolsListInput")
+          .get(symbolsInput)
           .should("have.value", "")
           .should("be.visible")
           .focus()

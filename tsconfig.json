@@ -22,6 +22,14 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "cypress/selectors/symbolsList.css.js",
+    "cypress/selectors/groupsList.css.js",
+    "cypress/selectors/symbolsData.css.js"
+  ],
   "exclude": ["node_modules"]
 }
