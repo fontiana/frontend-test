@@ -1,3 +1,3 @@
-export interface ExchangeInfoI {
+export type TExchangeInfo = {
   [key: string]: string;
-}
+};

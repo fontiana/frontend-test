@@ -1,11 +1,11 @@
 import * as S from "./styles";
 
-interface SpinnerI {
+type TSpinner = {
   page?: string;
   message?: string;
-}
+};
 
-const Spinner = ({ page, message }: SpinnerI) => {
+const Spinner = ({ page, message }: TSpinner) => {
   return (
     <S.Container data-testid={`${page}__spinner`}>
       <S.Loader />

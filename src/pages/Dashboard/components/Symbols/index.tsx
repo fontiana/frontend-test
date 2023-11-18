@@ -8,21 +8,19 @@ import { ACTION_TYPE } from "../../context/useExchangeInfo/actions";
 import { useForm } from "react-hook-form";
 import { PAGES } from "../../../../utils/pages";
 
-interface SymbolI {
-  symbol: string;
-  // TODO: Need define rule to show symbols list
-}
+type TSymbol = string[];
 
 const Symbols = () => {
-  const [symbols, setSymbols] = useState([] as SymbolI[]);
-  const [symbolsFiltered, setSymbolsFiltered] = useState([] as SymbolI[]);
+  const [symbols, setSymbols] = useState<TSymbol>([]);
+  const [symbolsFiltered, setSymbolsFiltered] = useState<TSymbol>([]);
 
   const { register, handleSubmit, control, setValue, getValues } = useForm();
   const { exchanges, dispatchExchanges } = useExchangeInfo();
 
   const fetchSymbols = async () => {
     const symbols = await getSymbols();
-    setSymbols(symbols);
+    const symbolsName = symbols.map((coins: any) => coins.symbol);
+    setSymbols(symbolsName);
   };
 
   useEffect(() => {
@@ -46,9 +44,7 @@ const Symbols = () => {
   const handleSearch = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const symbolsFiltered = symbols.filter((symbol) =>
-        symbol.symbol.includes(
-          (e.target as HTMLInputElement).value.toUpperCase()
-        )
+        symbol.includes((e.target as HTMLInputElement).value.toUpperCase())
       );
 
       setSymbolsFiltered(symbolsFiltered);
@@ -103,15 +99,12 @@ const Symbols = () => {
 
           {(symbolsFiltered.length > 0 ? symbolsFiltered : symbols)
             ?.slice(0, 10)
-            .map((symbol, i) => {
+            .map((symbol) => {
               return (
-                <li key={symbol.symbol}>
-                  <S.CoinSymbol htmlFor={symbol.symbol}>
-                    <S.Checkbox
-                      id={symbol.symbol}
-                      {...register(symbol.symbol)}
-                    />
-                    {symbol.symbol}
+                <li key={symbol}>
+                  <S.CoinSymbol htmlFor={symbol}>
+                    <S.Checkbox id={symbol} {...register(symbol)} />
+                    {symbol}
                   </S.CoinSymbol>
                 </li>
               );

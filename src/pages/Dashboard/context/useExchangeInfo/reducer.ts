@@ -1,13 +1,12 @@
-import { ExchangeInfoI } from "../../types";
-import { ACTION_TYPE } from "./actions";
+import { TExchangeInfo } from "../../types";
+import { ACTION_TYPE, TAction } from "./actions";
 
-type Action = { type: ACTION_TYPE; payload?: any };
-interface StateI {
+type TState = {
   currentList: string;
-  lists: ExchangeInfoI | {};
-}
+  lists: TExchangeInfo | {};
+};
 
-export const reducer = (state: StateI, action: Action) => {
+export const reducer = (state: TState, action: TAction) => {
   const actionsTypes = {
     [ACTION_TYPE.ADD_NEW_LIST]: {
       ...state,

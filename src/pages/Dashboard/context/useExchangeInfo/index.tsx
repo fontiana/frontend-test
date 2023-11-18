@@ -1,22 +1,17 @@
 import React, { createContext, useContext, ReactNode, useReducer } from "react";
 import { reducer } from "./reducer";
-import { ACTION_TYPE } from "./actions";
-import { ExchangeInfoI } from "../../types";
+import { ACTION_TYPE, TAction } from "./actions";
+import { TExchangeInfo } from "../../types";
 
-type ActionI = {
-  type: ACTION_TYPE;
-  payload: any;
-};
-
-interface SymbolContextI {
+type TSymbolContext = {
   exchanges: {
     currentList: string;
-    lists: ExchangeInfoI | {};
+    lists: TExchangeInfo | {};
   };
-  dispatchExchanges: React.Dispatch<ActionI>;
-}
+  dispatchExchanges: React.Dispatch<TAction>;
+};
 
-const ExchangeInfoContext = createContext<SymbolContextI | undefined>(
+const ExchangeInfoContext = createContext<TSymbolContext | undefined>(
   undefined
 );
 

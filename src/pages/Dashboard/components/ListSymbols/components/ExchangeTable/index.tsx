@@ -3,7 +3,7 @@ import * as S from "../../styles";
 import useWebSocket from "react-use-websocket";
 import { useExchangeInfo } from "../../../../context/useExchangeInfo";
 
-interface SymbolInfoI {
+type TSymbolInfo = {
   A: string;
   B: string;
   C: number;
@@ -27,30 +27,33 @@ interface SymbolInfoI {
   v: string;
   w: string;
   x: string;
-}
+};
 
-interface WebSocketMessage {
+type TWebSocketMessage = {
   stream: string;
-  data: SymbolInfoI;
-}
-interface ExchangesInfoI {
-  [key: string]: SymbolInfoI;
-}
+  data: TSymbolInfo;
+};
+
+type TExchangesInfo = {
+  [key: string]: TSymbolInfo;
+};
 
 const ExchangeTable = () => {
-  const [exchangesInfo, setExchangesInfo] = useState<ExchangesInfoI>({});
+  const [exchangesInfo, setExchangesInfo] = useState<TExchangesInfo>({});
 
   const { exchanges } = useExchangeInfo();
 
   const symbolList =
     exchanges.currentList &&
-    Object.values((exchanges.lists as ExchangesInfoI)[exchanges.currentList])
-      ?.map((symbol: string) => symbol.toLowerCase())
+    Object.values((exchanges.lists as TExchangesInfo)[exchanges.currentList])
+      ?.map((symbol: string | number) =>
+        typeof symbol === "string" ? symbol.toLowerCase() : symbol
+      )
       .join("@ticker/");
 
   const wsUrl = `wss://stream.binance.com:9443/stream?streams=${symbolList}`;
 
-  const { lastJsonMessage } = useWebSocket<WebSocketMessage>(wsUrl, {
+  const { lastJsonMessage } = useWebSocket<TWebSocketMessage>(wsUrl, {
     onOpen: () => console.log(`Connected to App WS`),
     onError: (event) => {
       console.error(event);

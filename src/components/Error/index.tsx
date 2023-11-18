@@ -1,10 +1,11 @@
 import * as S from "./styles";
-interface ErrorProps {
+
+type TErrorProps = {
   message: string;
   onRetry?: () => void;
-}
+};
 
-const ErrorComponent = ({ message, onRetry }: ErrorProps) => {
+const ErrorComponent = ({ message, onRetry }: TErrorProps) => {
   return (
     <S.ErrorContainer>
       <h1>Error: {message}</h1>
