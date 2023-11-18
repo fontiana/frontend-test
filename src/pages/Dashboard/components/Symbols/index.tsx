@@ -1,14 +1,7 @@
-import {
-  ChangeEvent,
-  useEffect,
-  useState,
-  KeyboardEvent,
-  Suspense,
-} from "react";
+import { ChangeEvent, useEffect, useState, KeyboardEvent } from "react";
 import * as S from "./styles";
 import { getSymbols } from "../../../../api/binance";
 import { useExchangeInfo } from "../../context/useExchangeInfo";
-import Spinner from "../../../../components/Spinner";
 import { isAxiosError } from "axios";
 import ErrorComponent from "../../../../components/Error";
 import { ACTION_TYPE } from "../../context/useExchangeInfo/actions";
@@ -23,7 +16,6 @@ interface SymbolI {
 const Symbols = () => {
   const [symbols, setSymbols] = useState([] as SymbolI[]);
   const [symbolsFiltered, setSymbolsFiltered] = useState([] as SymbolI[]);
-  const [loading, setLoading] = useState(true);
 
   const { register, handleSubmit, control, setValue, getValues } = useForm();
   const { exchanges, dispatchExchanges } = useExchangeInfo();
@@ -36,11 +28,8 @@ const Symbols = () => {
   useEffect(() => {
     fetchSymbols();
 
-    setLoading(false);
-
     return () => {
       setSymbols([]);
-      setLoading(true);
     };
   }, []);
 
@@ -81,14 +70,6 @@ const Symbols = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <S.Wrapper>
-        <Spinner message="Loading symbols..." />
-      </S.Wrapper>
-    );
-  }
-
   if (isAxiosError(symbols)) {
     return (
       <S.Wrapper>
@@ -119,23 +100,22 @@ const Symbols = () => {
               Symbol
             </S.CoinSymbolHeader>
           </li>
-          <Suspense fallback={<Spinner />}>
-            {(symbolsFiltered.length > 0 ? symbolsFiltered : symbols)
-              ?.slice(0, 10)
-              .map((symbol, i) => {
-                return (
-                  <li key={symbol.symbol}>
-                    <S.CoinSymbol htmlFor={symbol.symbol}>
-                      <S.Checkbox
-                        id={symbol.symbol}
-                        {...register(symbol.symbol)}
-                      />
-                      {symbol.symbol}
-                    </S.CoinSymbol>
-                  </li>
-                );
-              })}
-          </Suspense>
+
+          {(symbolsFiltered.length > 0 ? symbolsFiltered : symbols)
+            ?.slice(0, 10)
+            .map((symbol, i) => {
+              return (
+                <li key={symbol.symbol}>
+                  <S.CoinSymbol htmlFor={symbol.symbol}>
+                    <S.Checkbox
+                      id={symbol.symbol}
+                      {...register(symbol.symbol)}
+                    />
+                    {symbol.symbol}
+                  </S.CoinSymbol>
+                </li>
+              );
+            })}
         </ul>
         <S.Button value="Add to List" />
       </form>
