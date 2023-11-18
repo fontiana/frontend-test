@@ -8,6 +8,7 @@ export const Wrapper = styled.aside`
   display: flex;
   flex-direction: column;
   padding: 12px 24px;
+  max-height: 488px;
 `;
 
 export const Search = styled.input`

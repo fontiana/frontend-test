@@ -23,8 +23,11 @@ body {
     #20303b,
     #1e4147
   );
-  height: 100vh;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   color: var(--text-color);
+  height: 100vh;
 }
 
 * {

@@ -4,6 +4,7 @@ import media from "../../../../utils/media";
 export const Wrapper = styled.section`
   border: 2px solid var(--primary-color);
   min-width: 220px;
+  max-height: 900px;
   background-color: rgba(30, 65, 71, 0.5);
   border-radius: 16px;
   display: flex;
