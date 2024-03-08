@@ -1,3 +1,21 @@
 import { createContext } from "react";
+import {
+  ISymbolContext,
+  ISymbolDispatchContext,
+} from "../models/SymbolsModels";
 
-export const SymbolContext = createContext([]);
+const SYMBOLS_CONTEXT_INITIAL_VALUES = {
+  SymbolsContext: {
+    symbol: [],
+  },
+  SymbolsDispatchContextMethods: {
+    handleSymbolValue: () => {},
+  },
+};
+
+export const SymbolsContext = createContext<ISymbolContext>(
+  SYMBOLS_CONTEXT_INITIAL_VALUES.SymbolsContext
+);
+export const SymbolsDispatchContext = createContext<ISymbolDispatchContext>(
+  SYMBOLS_CONTEXT_INITIAL_VALUES.SymbolsDispatchContextMethods
+);

@@ -11,8 +11,6 @@ import { ESymbolsActionsTypes } from "../../models/SymbolsModels";
 
 export const CheckboxList = () => {
   const [checked, setChecked] = useState<string[]>([]);
-
-  const [symbols, dispatch] = useReducer(symbolReducer, []); //TODO: Consertar isso aqui.
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -25,10 +23,10 @@ export const CheckboxList = () => {
       .then((response) => response.json())
       .then((data) => {
         // TODO: Consertar isso aqui.
-        dispatch({
-          type: ESymbolsActionsTypes.GET_ALL_DATA,
-          payload: data.symbols,
-        });
+        // dispatch({
+        //   type: ESymbolsActionsTypes.GET_ALL_DATA,
+        //   payload: data.symbols,
+        // });
         setData(data.symbols);
       })
       .catch((error) => {
