@@ -62,3 +62,35 @@ Binance documentation:
 
 UI Sample to use as a guide:
 ![Screenshot 2023-03-15 at 10 51 49](https://user-images.githubusercontent.com/20883536/225329370-30ff8f83-7493-4b91-9ae1-561b6fe6bda3.png)
+
+# Como testar
+
+## Para abrir a aplicação execute o comando:
+
+```bash
+yarn install
+
+yarn dev
+```
+Basta copiar o URL (normalmente [http://localhost:3000/](http://localhost:3000/)) disponibilizado no console e colar no seu navegador e pronto!
+## Para executar os testes execute o comando:
+
+```bash
+yarn cypress open
+```
+
+1. Irá abrir uma janela do cypress
+2. Selecione E2E Testing
+3. Selecione o navegador e depois clique em `Start E2E Testing`
+4. Selecione um dos teste pre-configurados
+  
+> - **binanceTesteIntegration:** Teste de integração com a API
+> 
+> - **groupsList:** Teste do componente de criação de listas
+> 
+> - **symbolsList:** Teste do componente de seleção de symbolos
+> 
+> Obs.: Para rodar os teste é necessário que o projeto esteja rodando
+> Obs.: Recomendo não navegar no computador enquanto estiver rodando para melhor precisão dos testes
+
+E pronto! Os testes serão executados e você poderá ver o resultado
