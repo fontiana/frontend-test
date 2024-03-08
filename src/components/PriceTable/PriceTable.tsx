@@ -1,4 +1,7 @@
-import Paper from "@mui/material/Paper";
+import { useContext, useEffect, useState } from "react";
+import { SymbolsContext } from "../../context/SymbolContext";
+import { socket } from "./../../socket";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -25,6 +28,22 @@ const rows = [
 ];
 
 export const PriceTable = () => {
+  const symbolValue = useContext(SymbolsContext);
+  const [streamString, setStreamString] = useState<string>("");
+  console.log(streamString);
+
+  useEffect(() => {
+    console.log("symbolValue", symbolValue.symbol);
+    const symbols = symbolValue.symbol;
+    let connectionString = "wss://data-stream.binance.com/stream?streams=";
+
+    symbols.forEach((symbol) => {
+      connectionString += symbol.symbol + "/";
+    });
+
+    setStreamString(connectionString);
+  }, [symbolValue]);
+
   return (
     <TableContainer>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">

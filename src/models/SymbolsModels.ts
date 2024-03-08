@@ -34,7 +34,7 @@ export interface ISymbols {
 }
 
 export interface ISymbolContext {
-  symbol: ISymbols[] | undefined;
+  symbol: ISymbols[] | [];
 }
 
 export interface ISymbolDispatchContext {

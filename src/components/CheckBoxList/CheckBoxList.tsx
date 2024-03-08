@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -8,10 +8,16 @@ import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import { symbolReducer } from "../../reducers/SymbolReducer";
 import { ESymbolsActionsTypes } from "../../models/SymbolsModels";
+import {
+  SymbolsContext,
+  SymbolsDispatchContext,
+} from "../../context/SymbolContext";
 
 export const CheckboxList = () => {
   const [checked, setChecked] = useState<string[]>([]);
   const [data, setData] = useState([]);
+  const symbolDispatch = useContext(SymbolsDispatchContext);
+  const symbolsContextValue = useContext(SymbolsContext);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -22,11 +28,6 @@ export const CheckboxList = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        // TODO: Consertar isso aqui.
-        // dispatch({
-        //   type: ESymbolsActionsTypes.GET_ALL_DATA,
-        //   payload: data.symbols,
-        // });
         setData(data.symbols);
       })
       .catch((error) => {
@@ -44,12 +45,17 @@ export const CheckboxList = () => {
 
     if (currentIndex === -1) {
       newChecked.push(value);
+      symbolDispatch.handleSymbolValue(value);
     } else {
       newChecked.splice(currentIndex, 1);
     }
 
     setChecked(newChecked);
   };
+
+  useEffect(() => {
+    console.log("symbolsContextValue:", symbolsContextValue);
+  }, [symbolsContextValue]);
 
   return (
     <List sx={{ width: "100%", maxHeight: "100%", overflow: "auto" }}>
