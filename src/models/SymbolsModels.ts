@@ -35,6 +35,7 @@ export interface ISymbols {
 
 export interface ISymbolContext {
   symbol: ISymbols[] | [];
+  wwsSymbolString: string;
 }
 
 export interface ISymbolDispatchContext {

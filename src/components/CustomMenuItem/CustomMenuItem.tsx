@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 // MUI components
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -11,11 +9,11 @@ export const CustomMenuItem = () => {
   return (
     <Box sx={{ display: "flex" }} pb={"8px"}>
       <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        value={""}
-        label="Age"
-        onChange={() => {}}
+        labelId="list-select-label"
+        id="list-select"
+        value={10}
+        label="Lista"
+        onChange={(e) => {}}
         fullWidth
         size="small"
       >

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useReducer, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -6,18 +6,14 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
-import { symbolReducer } from "../../reducers/SymbolReducer";
-import { ESymbolsActionsTypes } from "../../models/SymbolsModels";
-import {
-  SymbolsContext,
-  SymbolsDispatchContext,
-} from "../../context/SymbolContext";
+
+import { SymbolsDispatchContext } from "../../context/SymbolContext";
 
 export const CheckboxList = () => {
   const [checked, setChecked] = useState<string[]>([]);
   const [data, setData] = useState([]);
   const symbolDispatch = useContext(SymbolsDispatchContext);
-  const symbolsContextValue = useContext(SymbolsContext);
+  //const symbolsContextValue = useContext(SymbolsContext);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -53,12 +49,8 @@ export const CheckboxList = () => {
     setChecked(newChecked);
   };
 
-  useEffect(() => {
-    console.log("symbolsContextValue:", symbolsContextValue);
-  }, [symbolsContextValue]);
-
   return (
-    <List sx={{ width: "100%", maxHeight: "100%", overflow: "auto" }}>
+    <List sx={{ width: "100%", maxHeight: "100%" }}>
       <ListSubheader sx={{ display: "flex" }}>
         <Checkbox edge="start" tabIndex={-1} disableRipple />
         Symbol

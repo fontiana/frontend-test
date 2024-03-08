@@ -21,7 +21,7 @@ export const Menu = () => {
             ),
           }}
         />
-        <Paper square variant="outlined">
+        <Paper square variant="outlined" sx={{ overflow: "auto" }}>
           <CheckboxList />
         </Paper>
       </Stack>

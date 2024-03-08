@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { SymbolsContext } from "../../context/SymbolContext";
-import { socket } from "./../../socket";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -8,41 +7,40 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-
-function createData(
-  symbol: string,
-  lastPrice: number,
-  bidPrice: number,
-  askPrice: number,
-  priceChange: number // TODO: Vai ser um icone
-) {
-  return { symbol, lastPrice, bidPrice, askPrice, priceChange };
-}
-
-const rows = [
-  createData("ETHBC", 159, 6.0, 24, 4.0),
-  createData("ETHBC", 237, 9.0, 37, 4.3),
-  createData("ETHBC", 262, 16.0, 24, 6.0),
-  createData("ETHBC", 305, 3.7, 67, 4.3),
-  createData("ETHBC", 356, 16.0, 49, 3.9),
-];
+import { io } from "socket.io-client";
+import { ISymbolPayload } from "../../models/SymbolPayloadModels";
 
 export const PriceTable = () => {
   const symbolValue = useContext(SymbolsContext);
-  const [streamString, setStreamString] = useState<string>("");
-  console.log(streamString);
+  const socket = io(symbolValue.wwsSymbolString);
+
+  const [, setIsConnected] = useState(socket.connected);
+  const [symbolPayload, setSymbolPayload] = useState<ISymbolPayload[]>([]);
 
   useEffect(() => {
-    console.log("symbolValue", symbolValue.symbol);
-    const symbols = symbolValue.symbol;
-    let connectionString = "wss://data-stream.binance.com/stream?streams=";
+    socket.connect();
 
-    symbols.forEach((symbol) => {
-      connectionString += symbol.symbol + "/";
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("24hrTicker", (payload) => {
+      setSymbolPayload((lastSymbolPayload) => [
+        ...lastSymbolPayload,
+        ...payload,
+      ]);
     });
 
-    setStreamString(connectionString);
-  }, [symbolValue]);
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket]);
 
   return (
     <TableContainer>
@@ -57,15 +55,15 @@ export const PriceTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.symbol}>
+          {symbolPayload.map((row) => (
+            <TableRow key={row.s}>
               <TableCell component="th" scope="row">
-                {row.symbol}
+                {row.s}
               </TableCell>
-              <TableCell align="right">{row.lastPrice}</TableCell>
-              <TableCell align="right">{row.bidPrice}</TableCell>
-              <TableCell align="right">{row.askPrice}</TableCell>
-              <TableCell align="right">{row.priceChange}</TableCell>
+              <TableCell align="right">{row.c}</TableCell>
+              <TableCell align="right">{row.b}</TableCell>
+              <TableCell align="right">{row.a}</TableCell>
+              <TableCell align="right">{row.p}</TableCell>
             </TableRow>
           ))}
         </TableBody>

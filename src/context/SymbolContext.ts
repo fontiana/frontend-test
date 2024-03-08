@@ -7,6 +7,7 @@ import {
 const SYMBOLS_CONTEXT_INITIAL_VALUES = {
   SymbolsContext: {
     symbol: [],
+    wwsSymbolString: "",
   },
   SymbolsDispatchContextMethods: {
     handleSymbolValue: () => {},
