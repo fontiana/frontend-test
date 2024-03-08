@@ -12,6 +12,7 @@
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
     "babel": "^6.23.0",
+    "dotenv": "^16.4.5",
     "material-icons": "^1.13.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
